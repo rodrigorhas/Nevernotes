@@ -1,8 +1,7 @@
 angular.module("App")
-	.controller("editController", function ($routeParams) {
-
-		var timeout = null,
-			save_treshold = 3000;
+	.controller("newController", function ($scope, $timeout, store) {
+		$(function () {
+			var timeout = null;
 
 			function timeNow(){
 		        var today = new Date();
@@ -55,7 +54,7 @@ angular.module("App")
 	                    }
 	                    timeout = setTimeout(function () {
 	                        saveNote();
-	                    }, save_treshold);
+	                    }, 5000);
 	                },
 	                onImageUpload: function(files, editor, welEditable) {
 	                    sendFile(files[0],editor,welEditable);
@@ -64,42 +63,6 @@ angular.module("App")
 	        });
 	    }
 
-	    function sendFile(file,editor,welEditable) {
-	      data = new FormData();
-	      data.append("file", file);
-	        $.ajax({
-	            url: "saveimage.php",
-	            data: data,
-	            cache: false,
-	            contentType: false,
-	            processData: false,
-	            type: 'POST',
-	            success: function(data){
-	            //alert(data);
-	              $('#summernote').summernote('editor.insertImage', data);
-	             // $('#summernote').summernote('insertNode', data);
-	            },
-	           error: function(jqXHR, textStatus, errorThrown) {
-	             console.log(textStatus+" "+errorThrown);
-	           }
-	        });
-	    }
-
-		var nid = $routeParams.nid;
-
-		if(nid) {
-			$.ajax({
-                url: 'load.php',
-                method: 'post',
-                dataType: "JSON",
-                data: {id: nid},
-                success: function(response) {
-                    $('input#noteId').val(nid);
-                    $('input#title').val(response.title);
-                    $('div#summernote').html(response.text);
-
-                    configSummerNote();
-                }
-            })
-		}
+	    configSummerNote();
 	});
+});

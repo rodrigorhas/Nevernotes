@@ -51,4 +51,8 @@
 .card .card-footer {
   padding: 16px; }
 
+.grid .grid-item {
+  width: 25%;
+  float: left; }
+
 /*# sourceMappingURL=style.css.map */

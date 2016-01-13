@@ -91,6 +91,9 @@
 	}
 }
 
-.col-fixed {
-
+.grid {
+	.grid-item {
+		width: 25%;
+		float: left
+	}
 }

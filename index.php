@@ -101,17 +101,20 @@
 
     <script src="js/script.js"></script>
     <script src="app/router.js"></script>
-    <script src="app/filter.js"></script>
+    <script src="app/compileHTML.js"></script>
 
     <script src="app/services/store.js"></script>
 
     <!-- <script src="app/controllers/search.js"></script> -->
     <script src="app/controllers/list.js"></script>
     <script src="app/controllers/edit.js"></script>
+    <script src="app/controllers/new.js"></script>
 
     <script src="app/directives/btn-class.js"></script>
     <script src="app/directives/icon.js"></script>
     <script src="app/directives/historyBack.js"></script>
+
+    <script src="js/mansory/masonry.pkgd.min.js"></script>
 
 </body>
 </html>

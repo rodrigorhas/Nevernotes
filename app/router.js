@@ -12,6 +12,11 @@ angular.module("App")
 			controller: "editController"
 		})
 
+		.when('/new/', {
+			templateUrl: "templates/new.html",
+			controller: "newController"
+		})
+
 		.otherwise({
 			redirect: "/error-404"
 		})
