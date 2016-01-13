@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<!-- include libraries(jQuery, bootstrap, fontawesome) -->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script> 
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
+
+	<!-- include summernote css/js-->
+	<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.7.1/summernote.css" rel="stylesheet">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.7.1/summernote.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-3" id="notescards">
+				
+			</div>
+			<div class="col-sm-9">
+				<div><input type="text" id='title' placeholder="title" /> <span id='saving'>Draft not saved</span> </div>
+				<input type="hidden" id='noteId' />
+				<div id="summernote"></div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+
+	<script type="text/javascript">
+		var timeout = null;
+
+		var qs = (function(a) {
+		    if (a == "") return {};
+		    var b = {};
+		    for (var i = 0; i < a.length; ++i)
+		    {
+		        var p=a[i].split('=', 2);
+		        if (p.length == 1)
+		            b[p[0]] = "";
+		        else
+		            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+		    }
+		    return b;
+		})(window.location.search.substr(1).split('&'));
+
+		function timeNow(){
+			var today = new Date();
+		    var h = today.getHours();
+		    var m = today.getMinutes();
+		    var s = today.getSeconds();
+		    // add a zero in front of numbers<10
+		    h = (h<10) ? "0" + h : h;
+		    m = (m<10) ? "0" + m : m;
+		    s = (s<10) ? "0" + s : s;
+		    //return h + ":" + m + ":" + s;
+		    return h + ":" + m;
+		}
+
+		function loadAllNotes(callback){
+			$.ajax({
+				url: 'getNotes.php',
+				method: 'post',
+				success: function(a, e, i){
+					var result = JSON.parse(a);
+						$.each(result.notes, function(index, value){
+							var card = "<div class='panel panel-primary'>" + value.title + "<div>"+ value.text +"</div><div>"+ value.created_at +"</div></div>";
+
+							$('#notescards').append(card);
+						});
+		        	if(callback) callback();
+				}
+			})
+		}
+
+		function loadNote(nid, callback){
+			if(nid){
+				$.ajax({
+					url: 'load.php',
+					method: 'post',
+					data: {
+						id: nid
+					},
+					success: function(a, e, i){
+						var result = JSON.parse(a);
+
+						$('input#noteId').val(qs['nid']);
+			        	$('input#title').val(result.title);
+			        	$('div#summernote').html(result.text);
+			        	//$('div#summernote').summernote("code", result.text);
+			        	if(callback) callback();
+					}
+				})
+			}
+		}
+
+		function saveNote(){
+			var noteId = $('input#noteId').val(),
+	        	title = $('input#title').val(),
+	        	text = $('div#summernote').summernote("code");
+
+	        $('span#saving').html('Saving draft...');
+	        $.ajax({
+	        	url: 'save.php',
+	        	method: 'post',
+	        	data: {
+	        		id: noteId,
+	        		title: title,
+	        		text: text
+	        	},
+	        	success: function(a, e, i){
+	        		var result = JSON.parse(a);
+	        		if(result.success){
+	        			$('span#saving').html('Draft saved at ' + timeNow());
+	        			if(result.id){
+	        				$('input#noteId').val(result.id);
+	        			}
+	        			
+	        		}else{
+	        			$('span#saving').html('Could not save draft');
+	        		}
+	        	}
+
+	        })
+		}
+
+		function sendFile(file,editor,welEditable) {
+	      data = new FormData();
+	      data.append("file", file);
+	        $.ajax({
+	            url: "saveimage.php",
+	            data: data,
+	            cache: false,
+	            contentType: false,
+	            processData: false,
+	            type: 'POST',
+	            success: function(data){
+	            //alert(data);
+	              $('#summernote').summernote('editor.insertImage', data);
+	             // $('#summernote').summernote('insertNode', data);
+	            },
+	           error: function(jqXHR, textStatus, errorThrown) {
+	             console.log(textStatus+" "+errorThrown);
+	           }
+	        });
+	    }
+
+	    function configSummerNote(){
+	    	$('#summernote').summernote({
+				height: '500',
+				callbacks: {
+					onChange: function(e) {
+					    if (timeout !== null) {
+					        clearTimeout(timeout);
+					    }
+					    timeout = setTimeout(function () {
+					        saveNote();
+					    }, 5000);
+					},
+					onImageUpload: function(files, editor, welEditable) {
+		                sendFile(files[0],editor,welEditable);
+		            }
+				}
+			});
+	    }
+
+		$(document).ready(function() {
+
+			loadAllNotes();
+
+			if(qs['nid']){
+				loadNote(qs['nid'], function(){
+					configSummerNote();
+				});
+			}else{
+				configSummerNote();
+			}
+
+			
+			
+
+		});
+
+	</script>
+</body>
+</html>
