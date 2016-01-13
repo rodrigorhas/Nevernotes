@@ -1,6 +1,11 @@
 <?php
 
-    $url = "http://localhost/summernote";
+    //$url = "http://localhost/summernote";
+    $url = __DIR__;
+    echo $url;
+
+    exit();
+
     $allowed = array('png', 'jpg', 'jpeg');
 
     if(isset($_FILES['file']) && $_FILES['file']['error'] == 0){
