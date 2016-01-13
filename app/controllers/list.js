@@ -2,10 +2,33 @@ angular.module("App")
 	.controller("listController", function ($scope, $timeout, store) {
 		$(function () {
 
+			var scrollbar = function (el, color, cursorWidth, step) {
+				el.niceScroll({
+					cursorcolor: color,
+					cursorborder: 0,
+					cursorborderradius: 0,
+					cursorwidth: cursorWidth,
+					bouncescroll: true,
+					mousescrollstep: (step) ? step : 40
+				});
+			};
+
+			//$timeout(() => scrollbar($(".card .card-body"), "rgba(0,0,0,0.3)", "2px"))
+
 			$scope.notes = [];
 
+			var chunk = function(arr, size) {
+			   var newArr = [];
+			      for (var i=0; i<arr.length; i+=size) {
+			          newArr.push(arr.slice(i, i+size));
+			      }
+			   return newArr;
+			};
+
 			store.loadData("notes", function () {
-	    		$timeout(() => $scope.notes = store.get("notes"));
+	    		$timeout(() => {
+	    			$scope.notes = chunk(store.get("notes"), 2);
+	    		});
 			});
 
 			var timeout = null;
@@ -33,27 +56,6 @@ angular.module("App")
 		        m = (m<10) ? "0" + m : m;
 		        s = (s<10) ? "0" + s : s;
 		        return h + ":" + m;
-		    }
-
-		    function loadNote(nid, callback){
-		        if(nid){
-		            $.ajax({
-		                url: 'load.php',
-		                method: 'post',
-		                data: {
-		                    id: nid
-		                },
-		                success: function(a, e, i){
-		                    var result = JSON.parse(a);
-
-		                    $('input#noteId').val(qs['nid']);
-		                    $('input#title').val(result.title);
-		                    $('div#summernote').html(result.text);
-		                    //$('div#summernote').summernote("code", result.text);
-		                    if(callback) callback();
-		                }
-		            })
-		        }
 		    }
 
 		    function saveNote(){
@@ -107,36 +109,7 @@ angular.module("App")
 		        });
 		    }
 
-		    function configSummerNote(){
-		        $('#summernote').summernote({
-		            height: '500',
-		            callbacks: {
-		                onChange: function(e) {
-		                    if (timeout !== null) {
-		                        clearTimeout(timeout);
-		                    }
-		                    timeout = setTimeout(function () {
-		                        saveNote();
-		                    }, 5000);
-		                },
-		                onImageUpload: function(files, editor, welEditable) {
-		                    sendFile(files[0],editor,welEditable);
-		                }
-		            }
-		        });
-		    }
-
-		    $(document).ready(function() {
-
-		        if(qs['nid']){
-		            loadNote(qs['nid'], function(){
-		                configSummerNote();
-		            });
-		        }else{
-		            configSummerNote();
-		        }
-		    });
-	
-
+	        if(qs['nid'])
+	            loadNote(qs['nid']);
 		});
 	});

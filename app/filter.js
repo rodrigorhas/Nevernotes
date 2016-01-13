@@ -1,7 +1,10 @@
 angular.module("App")
-	.filter("html", ['$sce', function($sce) {
-		console.log($sce);
-	return function(htmlCode){
-		return $sce.trustAsHtml(htmlCode);
-	}
+	.directive("compile",["$compile", function ($compile) {
+		return {
+			link: function (scope, element, attr) {
+				element.removeAttr("html");
+
+				element.append($compile(attr.html || "")(scope));
+			}
+		}
 	}]);

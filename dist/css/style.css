@@ -45,7 +45,7 @@
     top: -4px;
     opacity: 0; }
 .card .card-body {
-  max-height: 200px;
+  max-height: 170px;
   overflow-y: auto;
   overflow-x: hidden; }
 .card .card-footer {

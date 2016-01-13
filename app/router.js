@@ -7,6 +7,11 @@ angular.module("App")
 			controller: "listController"
 		})
 
+		.when('/edit/:nid', {
+			templateUrl: "templates/edit.html",
+			controller: "editController"
+		})
+
 		.otherwise({
 			redirect: "/error-404"
 		})
