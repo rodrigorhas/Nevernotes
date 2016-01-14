@@ -1,22 +1,22 @@
 angular.module("App")
-	.controller("listController", function ($scope, $timeout, store, $routeParams, chunk) {
+	.controller("starredController", function ($scope, $timeout, store, $routeParams, chunk) {
 		$(function () {
 
 			$scope.changeColor = function (e) {
 				$(e.target).parents(".card").find(".color-picker").trigger("cp:toggle");
 			}
 
-			$scope.toggleStar = function (note) {
-
-				console.log(note);
-				note.starred = (note.starred == "1") ? "0" : "1";
-
-				var opts = {nid: note.id, starred: note.starred};
-
+			$scope.removeStar = function (id) {
 				$.ajax({
 					url: "app/requests/star.php",
 					method: "post",
-					data: opts
+					data: {nid: id, starred: 0},
+					success: function () {
+						for (var i = 0; i < $scope.starred.length; i++) {
+							if($scope.starred[i].id == id)
+								$timeout(() => $scope.starred.splice(i, 1));
+						};
+					}
 				});
 			}
 
@@ -32,14 +32,7 @@ angular.module("App")
 			};
 
 			store.loadData("notes", function () {
-	    		$timeout(() => {
-	    			var notes = store.get("notes");
-	    			notes.forEach(function (item) {
-	    				item.color = item.color || "";
-	    			});
-
-	    			$scope.notes = chunk(notes, 4);
-	    		});
+	    		$timeout(() => $scope.starred = chunk(store.get("notes"), 4));
 			});
 
 			var timeout = null;

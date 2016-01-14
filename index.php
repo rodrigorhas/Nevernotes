@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta name="theme-color" content="#fafafa">
+    <meta name="theme-color" content="#333">
     <title>NeverNotes</title>
 
     <link rel="stylesheet" href="fonts/Material-Design-Iconic-Font.css">
@@ -104,15 +104,19 @@
     <script src="js/summernotes/summernote.js"></script>
 
     <script src="app/services/store.js"></script>
+    <script src="app/services/chunk.js"></script>
 
     <!-- <script src="app/controllers/search.js"></script> -->
+    <script src="app/controllers/main.js"></script>
     <script src="app/controllers/list.js"></script>
     <script src="app/controllers/edit.js"></script>
     <script src="app/controllers/new.js"></script>
+    <script src="app/controllers/starred.js"></script>
 
     <script src="app/directives/btn-class.js"></script>
     <script src="app/directives/icon.js"></script>
     <script src="app/directives/historyBack.js"></script>
+    <script src="app/directives/card-color-picker.js"></script>
 
 </body>
 </html>

@@ -1,6 +1,6 @@
 <div class="notes">
-    <div class="col-sm-3" ng-repeat="group in notes">
-        <div class="card {{note.color}}" ng-repeat="note in group" data-id="{{note.id}}">
+    <div class="col-sm-3" ng-repeat="group in starred">
+        <div class="card {{note.color}}" ng-repeat="note in group | filter: {starred: 1}" data-id="{{note.id}}">
             <color-picker></color-picker>
             <div class="card-header">
             {{note.title}}
@@ -22,8 +22,7 @@
                                 <a href="">Excluir</a>
                             </li>
                             <li>
-                                <a ng-show="note.starred == 0" href="" ng-click="toggleStar(note)">Favoritar</a>
-                                <a ng-show="note.starred == 1" href="" ng-click="toggleStar(note)">Desfavoritar</a>
+                                <a href="" ng-click="removeStar(note.id)">Desfavoritar</a>
                             </li>
                             <li>
                                 <a href="">Renomear</a>

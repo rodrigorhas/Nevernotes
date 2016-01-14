@@ -1,3 +1,63 @@
+.alizarin, {
+	background-color: #e74c3c;
+}
+
+.emerald {
+	background-color: #3fd47d;
+}
+
+.turquoise {
+	background-color: #1abc9c;
+}
+
+.green_sea {
+	background-color: #16a085;
+}
+
+.sun_flower {
+	background-color: #f1c40f;
+}
+
+.orange {
+	background-color: #f39c12;
+}
+
+.peter_river {
+	background-color: #3498db;
+}
+
+.belize_hole {
+	background-color: #2980b9;
+}
+
+.wisteria {
+	background-color: #8e44ad;
+}
+
+.wet_asphalt {
+	background-color: #34495e;
+}
+
+.mid_blue {
+	background-color: #2c3e50;
+}
+
+.amethyst {
+	background-color: #9b59b6;
+}
+
+.nephritis {
+	background-color: #27ae60;
+}
+
+.abestos {
+	background-color: #7f8c8d;
+}
+
+.silver {
+	background-color: #bdc3c7;
+}
+
 /* Let's get this party started */
 ::-webkit-scrollbar {
     width: 6px;
@@ -81,190 +141,48 @@
 
 .card {
 
-	&.alizarin {
-		background-color: #e74c3c;
-		color: white;
+	border-radius: 2px;
 
-		.card-header {
-			border-bottom-color: transparent;
+	.color-picker {
+		display: none;
+
+		.cp-backdrop {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: 0;
+			background-color: rgba(0,0,0,0.2);
+			z-index: 1;
 		}
 
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
+		.colors {
+			padding: 8px;
+		    position: absolute;
+		    bottom: 0;
+		    left: 0;
+		    right: 0;
+		    background-color: white;
+		    z-index: 2;
 
-	&.emerald {
-		background-color: #3fd47d;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.turquoise {
-		background-color: #1abc9c;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
+		    button {
+				content: "";
+				width: 18px;
+				height: 18px;
+				display: inline-block;
+				border-radius: 4px;
+				margin: 4px 0 0 4px;
+				border: 0;
+			}
 		}
 	}
 
-	&.green_sea {
-		background-color: #16a085;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.sun_flower {
-		background-color: #f1c40f;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.orange {
-		background-color: #f39c12;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.peter_river {
-		background-color: #3498db;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.belize_hole {
-		background-color: #2980b9;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.wisteria {
-		background-color: #8e44ad;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.wet_asphalt {
-		background-color: #34495e;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.mid_blue {
-		background-color: #2c3e50;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.amethyst {
-		background-color: #9b59b6;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.nephritis {
-		background-color: #27ae60;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.abestos {
-		background-color: #7f8c8d;
-		color: white;
-
-		.card-header {
-			border-bottom-color: transparent;
-		}
-
-		.card-toolbar li a i {
-			color: white;
-		}
-	}
-
-	&.silver {
-		background-color: #bdc3c7;
+	&.alizarin,	&.sun_flower, &.orange,
+	&.silver, &.abestos, &.emerald,
+	&.nephritis, &.green_sea, &.peter_river,
+	&.belize_hole, &.wisteria,	&.amethyst,
+	&.wet_asphalt, &.mid_blue {
 		color: white;
 
 		.card-header {
@@ -277,7 +195,7 @@
 	}
 
 	.card-header:not(.ch-alt) {
-		padding: 16px 16px 16px 26px;
+		padding: 16px 8px 16px 26px;
 	}
 
 	.card-header {
@@ -320,4 +238,8 @@
 	.card {
 		margin-bottom: 16px;
 	}
+}
+
+.modal-backdrop {
+	z-index: 10;
 }

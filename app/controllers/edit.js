@@ -48,6 +48,7 @@ angular.module("App")
 		function configSummerNote(){
 	        $('#summernote').summernote({
 	            height: '500',
+	            focus: true,
 	            callbacks: {
 	                onChange: function(e) {
 	                    if (timeout !== null) {
@@ -59,6 +60,26 @@ angular.module("App")
 	                },
 	                onImageUpload: function(files, editor, welEditable) {
 	                    sendFile(files[0],editor,welEditable);
+	                },
+
+	                toolbar: [
+					    ['mybutton', ['title']]
+				  	],
+
+	                buttons: {
+	                	title: function (context) {
+							var ui = $.summernote.ui;
+
+							var button = ui.button({
+								contents: 'Title',
+								tooltip: 'Set note title',
+								click: function () {
+									//context.invoke('editor.insertText', 'hello');
+								}
+							});
+
+							return button.render();
+						}
 	                }
 	            }
 	        });
@@ -68,7 +89,7 @@ angular.module("App")
 	      data = new FormData();
 	      data.append("file", file);
 	        $.ajax({
-	            url: "saveimage.php",
+	            url: "app/requests/saveimage.php",
 	            data: data,
 	            cache: false,
 	            contentType: false,
@@ -89,7 +110,7 @@ angular.module("App")
 
 		if(nid) {
 			$.ajax({
-                url: 'load.php',
+                url: 'app/requests/load.php',
                 method: 'post',
                 dataType: "JSON",
                 data: {id: nid},

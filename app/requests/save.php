@@ -14,6 +14,10 @@
             "id" => $id,
             "title" => $title,
             "text" => $text,
+            "deleted" => 0,
+            "type" => "T",
+            "starred" => 0,
+            "color" => "mid_blue",
             "created_at" => $now->getTimestamp()
         ];
         if(DB::getInstance()->insert("notes", $data)){
@@ -39,6 +43,7 @@
 		 $data = [
             "title" => $title,
             "text" => $text,
+            "color" => "amethyst",
             "updated_at" => $now->getTimestamp()
         ];
         if(DB::getInstance()->update("notes", $noteId, $data)){

@@ -7,6 +7,11 @@ angular.module("App")
 			controller: "listController"
 		})
 
+		.when('/starred', {
+			templateUrl: "templates/starred.html",
+			controller: "starredController"
+		})
+
 		.when('/edit/:nid', {
 			templateUrl: "templates/edit.html",
 			controller: "editController"

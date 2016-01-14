@@ -1,6 +1,6 @@
 <?php
 
-	require_once('core/init.php');
+	require_once('../../core/init.php');
 		
     if($result = DB::getInstance()->query("SELECT * FROM notes")){
     	if(DB::getInstance()->count()){

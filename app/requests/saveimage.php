@@ -1,10 +1,6 @@
 <?php
 
-    //$url = "http://localhost/summernote";
-    $url = __DIR__;
-    echo $url;
-
-    exit();
+    $url = "http://localhost/nevernotes";
 
     $allowed = array('png', 'jpg', 'jpeg');
 
