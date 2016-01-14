@@ -157,11 +157,35 @@
     padding: 16px 26px; }
 
 .notes .col-sm-3 {
-  padding: 0 8px; }
+  padding: 0; }
 .notes .card {
-  margin-bottom: 16px; }
+  margin: 8px 0 0 8px; }
 
 .modal-backdrop {
   z-index: 10; }
+
+.btn.fab-lg {
+  border-radius: 100%;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16), 0 2px 10px rgba(0, 0, 0, 0.12);
+  width: 52px;
+  height: 52px;
+  font-size: 20px;
+  line-height: 2.17; }
+  .btn.fab-lg:hover {
+    color: white; }
+
+.action-fab {
+  position: fixed;
+  right: 45px;
+  bottom: 45px;
+  background-color: #e74c3c !important;
+  color: white; }
+
+body.sw-toggled #content {
+  padding: 0px 0 30px 250px; }
+
+body #content {
+  padding: 0; }
 
 /*# sourceMappingURL=style.css.map */

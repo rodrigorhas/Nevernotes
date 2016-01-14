@@ -17,7 +17,7 @@ angular.module("App")
 			controller: "editController"
 		})
 
-		.when('/new/', {
+		.when('/new', {
 			templateUrl: "templates/new.html",
 			controller: "newController"
 		})

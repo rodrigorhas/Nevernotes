@@ -63,7 +63,7 @@ angular.module("App")
 		      data = new FormData();
 		      data.append("file", file);
 		        $.ajax({
-		            url: "saveimage.php",
+		            url: "app/requests/saveimage.php",
 		            data: data,
 		            cache: false,
 		            contentType: false,

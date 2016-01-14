@@ -78,7 +78,7 @@
         <?php include "inc/sidenav.php"; ?>
 
         <section id="content">
-            <div class="container animated fadeIn" ng-view></div>
+            <div class="animated fadeIn" ng-view></div>
         </section>
     </section>
 
@@ -111,7 +111,6 @@
     <script src="app/controllers/list.js"></script>
     <script src="app/controllers/edit.js"></script>
     <script src="app/controllers/new.js"></script>
-    <script src="app/controllers/starred.js"></script>
 
     <script src="app/directives/btn-class.js"></script>
     <script src="app/directives/icon.js"></script>
