@@ -17,7 +17,7 @@
             "deleted" => 0,
             "type" => "T",
             "starred" => 0,
-            "color" => "mid_blue",
+            "color" => "white",
             "created_at" => $now->getTimestamp()
         ];
         if(DB::getInstance()->insert("notes", $data)){

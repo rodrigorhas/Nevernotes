@@ -188,7 +188,7 @@ angular.module("App")
 			 * Fullscreen snippet
 			 */
 
-			 $scope.togglefullscreen = function () {
+			 $scope.tfs = function () {
 				if (!document.fullscreenElement &&    // alternative standard method
 				!document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
 					if (document.documentElement.requestFullscreen) {

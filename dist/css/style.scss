@@ -272,12 +272,22 @@
     color: white;
 }
 
-body.sw-toggled #content {
-	padding: 0 0 30px 250px;
+@media only screen and (min-width: 767px) {
+	body.sw-toggled #content {
+		padding: 0 0 30px 250px !important;
+	}	
 }
 
-body #content {
-	padding: 0;
+@media only screen and (max-width: 767px) {
+
+	.action-fab {
+		right: 25px;
+		bottom: 25px;
+	}
+
+	body.sw-toggled #content {
+		padding: 0 0 30px 0 !important;
+	}	
 }
 
 .edit-form {

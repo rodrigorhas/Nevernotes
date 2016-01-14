@@ -47,7 +47,7 @@ angular.module("App")
 
 		function configSummerNote(){
 	        $('#summernote').summernote({
-	            height: '500',
+	            height: null,
 	            focus: true,
 	            callbacks: {
 	                onChange: function(e) {

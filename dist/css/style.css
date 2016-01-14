@@ -182,12 +182,16 @@
   background-color: #e74c3c !important;
   color: white; }
 
-body.sw-toggled #content {
-  padding: 0 0 30px 250px; }
+@media only screen and (min-width: 767px) {
+  body.sw-toggled #content {
+    padding: 0 0 30px 250px !important; } }
+@media only screen and (max-width: 767px) {
+  .action-fab {
+    right: 25px;
+    bottom: 25px; }
 
-body #content {
-  padding: 0; }
-
+  body.sw-toggled #content {
+    padding: 0 0 30px 0 !important; } }
 .edit-form #title {
   width: 100%;
   display: block;
