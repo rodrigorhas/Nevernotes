@@ -12,8 +12,7 @@
         }
         if(move_uploaded_file($_FILES['file']['tmp_name'], '../../assets/images/uploads/'.$_FILES['file']['name'])){
             $tmp= '../../assets/images/uploads/'.$_FILES['file']['name'];
-            echo '/assets/images/uploads/'.$_FILES['file']['name'];
-            //echo '{"status":"success"}';
-            exit;
+            echo 'assets/images/uploads/'.$_FILES['file']['name'];
+            
         }
     }
