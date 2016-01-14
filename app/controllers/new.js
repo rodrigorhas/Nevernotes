@@ -21,7 +21,7 @@ angular.module("App")
 
 		        $('span#saving').html('Saving draft...');
 		        $.ajax({
-		            url: 'save.php',
+		            url: 'app/requests/save.php',
 		            method: 'post',
 		            data: {
 		                id: noteId,

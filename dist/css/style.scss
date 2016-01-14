@@ -236,12 +236,13 @@
 }
 
 .notes {
+
 	.col-sm-3 {
-		padding: 0;
+		padding: 0 4px;
 	}
 
 	.card {
-		margin: 8px 0 0 8px;
+		margin: 8px 0 0 0;
 	}
 }
 
@@ -272,9 +273,23 @@
 }
 
 body.sw-toggled #content {
-	padding: 0px 0 30px 250px;
+	padding: 0 0 30px 250px;
 }
 
 body #content {
 	padding: 0;
+}
+
+.edit-form {
+	#title {
+		width: 100%;
+		display: block;
+		padding: 12px 16px;
+		border: none;
+		text-align: center;
+	}
+
+	.note-editor.note-frame {
+		border: none;
+	}
 }

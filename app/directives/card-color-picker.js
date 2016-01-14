@@ -28,6 +28,7 @@ angular.module("App").directive("colorPicker",["$timeout", function ($timeout) {
 
 			element.on("cp:toggle", function (e) {
 				element.toggle();
+				$("body .card .color-picker").hide();
 			});
 
 			element.find(".cp-backdrop").on("click", () => {
