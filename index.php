@@ -114,7 +114,9 @@
     <script src="app/directives/icon.js"></script>
     <script src="app/directives/historyBack.js"></script>
 
+    <script src="//desandro.github.io/imagesloaded/imagesloaded.pkgd.min.js"></script>
     <script src="js/mansory/masonry.pkgd.min.js"></script>
+    <script src="js/mansory/angular-masonry.min.js"></script>
 
 </body>
 </html>

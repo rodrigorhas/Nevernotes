@@ -16,17 +16,24 @@ angular.module("App")
 			$scope.notes = [];
 
 			var chunk = function(arr, size) {
-			   var newArr = [];
-			      for (var i=0; i<arr.length; i+=size) {
-			          newArr.push(arr.slice(i, i+size));
-			      }
-			   return newArr;
+				var result = [],
+					group = 0;
+
+				for (var i = 0; i < arr.length; i++) {
+					if(group == size) group = 0;
+					if(!result[group]) result[group] = [];
+
+					result[group].push(arr[i]);
+					group++;
+				};
+
+				return result;
 			};
 
 			store.loadData("notes", function () {
 	    		$timeout(() => {
-	    			//$scope.notes = chunk(store.get("notes"), 4);
-	    			$scope.notes = store.get("notes");
+	    			$scope.notes = chunk(store.get("notes"), 4);
+	    			//$scope.notes = store.get("notes");
 	    		});
 			});
 

@@ -1,4 +1,4 @@
-var app = angular.module('App', ["ngRoute"]);
+var app = angular.module('App', ["ngRoute", "masonry"]);
 
 app.controller("mainController", function ($scope, store) {
 

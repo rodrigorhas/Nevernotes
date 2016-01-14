@@ -51,8 +51,9 @@
 .card .card-footer {
   padding: 16px; }
 
-.grid .grid-item {
-  width: 25%;
-  float: left; }
+.notes .col-sm-3 {
+  padding: 0 8px; }
+.notes .card {
+  margin-bottom: 16px; }
 
 /*# sourceMappingURL=style.css.map */
