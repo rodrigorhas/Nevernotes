@@ -28,13 +28,20 @@ angular.module("App").directive("colorPicker",["$timeout", function ($timeout) {
 
 			element.on("cp:toggle", function (e) {
 				element.toggle();
-				$("body .card .color-picker").hide();
+			});
+
+			element.on("cp:show", function (e) {
+				$("body .card .color-picker").trigger('cp:hide');
+				element.show();
+			});
+
+			element.on("cp:hide", function (e) {
+				element.hide();
+				saveColor();
 			});
 
 			element.find(".cp-backdrop").on("click", () => {
-				element.trigger("cp:toggle");
-
-				saveColor();
+				element.trigger("cp:hide");
 			});
 
 			$timeout(() => {

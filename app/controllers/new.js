@@ -63,6 +63,27 @@ angular.module("App")
 	        });
 	    }
 
+	    function sendFile(file,editor,welEditable) {
+		      data = new FormData();
+		      data.append("file", file);
+		        $.ajax({
+		            url: "app/requests/saveimage.php",
+		            data: data,
+		            cache: false,
+		            contentType: false,
+		            processData: false,
+		            type: 'POST',
+		            success: function(data){
+		            //alert(data);
+		              $('#summernote').summernote('editor.insertImage', data);
+		             // $('#summernote').summernote('insertNode', data);
+		            },
+		           error: function(jqXHR, textStatus, errorThrown) {
+		             console.log(textStatus+" "+errorThrown);
+		           }
+		        });
+		    }
+
 	    configSummerNote();
 	});
 });

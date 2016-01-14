@@ -17,6 +17,11 @@ angular.module("App")
 			controller: "editController"
 		})
 
+		.when('/trash', {
+			templateUrl: "templates/trash.html",
+			controller: "listController"
+		})
+
 		.when('/new', {
 			templateUrl: "templates/new.html",
 			controller: "newController"

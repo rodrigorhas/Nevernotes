@@ -1,6 +1,6 @@
 <div class="notes">
     <div class="col-sm-3" ng-repeat="group in notes">
-        <div class="card {{note.color}}" ng-repeat="note in group | filter: {starred: 1, deleted: 0}" data-id="{{note.id}}">
+        <div class="card {{note.color}}" ng-repeat="note in group | filter: {deleted: 1}" data-id="{{note.id}}">
             <color-picker></color-picker>
             <div class="card-header">
             {{note.title}}
@@ -24,8 +24,9 @@
                                 <a href="#/edit/{{note.id}}">Editar</a>
                             </li>
                             <li>
-                                <a href="" ng-click="deleteNote(note.id, $event)">Lixeira</a>
+                                <a href="" ng-click="deleteNote(note.id, $event)">Excluir</a>
                             </li>
+                            <li>
                             <li>
                                 <a href="">Renomear</a>
                             </li>
@@ -42,3 +43,5 @@
         </div>
     </div>
 </div>
+
+<a href="#/new" class="btn fab-lg action-fab" ng-click="tfs()"><icon name="plus"></icon></a>

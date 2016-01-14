@@ -3,7 +3,7 @@ angular.module("App")
 		$(function () {
 
 			$scope.changeColor = function (e) {
-				$(e.target).parents(".card").find(".color-picker").trigger("cp:toggle");
+				$(e.target).parents(".card").find(".color-picker").trigger("cp:show");
 			}
 
 			$scope.toggleStar = function (note) {
@@ -17,6 +17,17 @@ angular.module("App")
 					data: opts,
 					success: function () {
 						$timeout(() => $scope.notes = chunk(store.get("notes") ,4))
+					}
+				});
+			}
+
+			$scope.deleteNote = function (id, e) {
+				$.ajax({
+					url: "app/requests/trash.php",
+					method: "post",
+					data: {nid: id, trash: 1},
+					success: function () {
+						$(e.target).parents(".card").remove();
 					}
 				});
 			}
