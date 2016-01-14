@@ -1,6 +1,6 @@
 <?php
 
-	require_once('core/init.php');
+	require_once('../../core/init.php');
 
 	$noteId = $_POST['id'];
 	$text = $_POST['text'];

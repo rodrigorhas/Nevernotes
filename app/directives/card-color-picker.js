@@ -16,12 +16,11 @@ angular.module("App").directive("colorPicker",["$timeout", function ($timeout) {
 				card = null;
 
 			function saveColor () {
+				if(!card || !color) return;
 				var id = card.data("id");
-				console.log(card);
-				console.log(id);
 
 				$.ajax({
-					url: "color.php",
+					url: "app/requests/color.php",
 					method: "post",
 					data: {nid: id, color: color}
 				})

@@ -115,6 +115,7 @@ angular.module("App")
                 dataType: "JSON",
                 data: {id: nid},
                 success: function(response) {
+                	console.log('write');
                     $('input#noteId').val(nid);
                     $('input#title').val(response.title);
                     $('div#summernote').html(response.text);
