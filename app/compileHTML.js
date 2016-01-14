@@ -1,8 +1,13 @@
 angular.module("App")
 	.directive("compile",["$compile", function ($compile) {
 		return {
+			replace: true,
+
 			link: function (scope, element, attr) {
-				element.removeAttr("html");
+
+				attr.$observe("html", function () {
+					element.removeAttr("html");
+				});
 
 				element.append($compile(attr.html || "")(scope));
 			}
