@@ -12,7 +12,7 @@
     <!-- Vendor CSS -->
     <link href="js/sweet-alert/sweet-alert.min.css" rel="stylesheet">
 
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.7.1/summernote.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/summernotes/summernote.css">
 
     <!-- CSS -->
     <link href="dist/css/app.min.css" rel="stylesheet">
@@ -89,8 +89,6 @@
 
     <script src="js/waves/waves.min.js"></script>
 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.7.1/summernote.js"></script>
-
     <script src="bower_components/bootstrap-growl/bootstrap-growl.min.js"></script>
 
     <script src="bower_components/bootstrap/js/modal.js"></script>
@@ -103,6 +101,8 @@
     <script src="app/router.js"></script>
     <script src="app/compileHTML.js"></script>
 
+    <script src="js/summernotes/summernote.js"></script>
+
     <script src="app/services/store.js"></script>
 
     <!-- <script src="app/controllers/search.js"></script> -->
@@ -113,10 +113,6 @@
     <script src="app/directives/btn-class.js"></script>
     <script src="app/directives/icon.js"></script>
     <script src="app/directives/historyBack.js"></script>
-
-    <script src="//desandro.github.io/imagesloaded/imagesloaded.pkgd.min.js"></script>
-    <script src="js/mansory/masonry.pkgd.min.js"></script>
-    <script src="js/mansory/angular-masonry.min.js"></script>
 
 </body>
 </html>

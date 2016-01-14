@@ -59,11 +59,11 @@
 
 .card {
 
-	&:hover {
+	/* &:hover {
 		.card-header .card-toolbar {
 			opacity: 1;
 		}
-	}
+	} */
 
 	.card-header {
 		border-bottom: 1px solid #eaeaea;
@@ -76,7 +76,7 @@
 			float: right;
 			position: relative;
 			top: -4px;
-			opacity: 0;
+			/* opacity: 0; */
 		}
 	}
 

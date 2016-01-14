@@ -5,8 +5,28 @@
             {{note.title}}
 
                 <ul class="card-toolbar">
-                    <li>
-                        <a href="#/edit/{{note.id}}" class="btn btn-default"><icon name="edit"></icon></a>
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="" class="btn btn-link"><icon name="more-vert"></icon></a>
+                        <ul class="dropdown-menu dm-icon pull-right">
+                            <li>
+                                <a href="">Adicionar tags</a>
+                            </li>
+                            <li>
+                                <a href="">Alterar cor</a>
+                            </li>
+                            <li>
+                                <a href="#/edit/{{note.id}}">Editar</a>
+                            </li>
+                            <li>
+                                <a href="">Excluir</a>
+                            </li>
+                            <li>
+                                <a href="">Favoritar</a>
+                            </li>
+                            <li>
+                                <a href="">Renomear</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>

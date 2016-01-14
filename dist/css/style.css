@@ -31,25 +31,29 @@
 .new-row {
   clear: left; }
 
-.card:hover .card-header .card-toolbar {
-  opacity: 1; }
-.card .card-header {
-  border-bottom: 1px solid #eaeaea; }
-  .card .card-header .card-toolbar {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    float: right;
-    position: relative;
-    top: -4px;
-    opacity: 0; }
-.card .card-body {
-  max-height: 170px;
-  overflow-y: auto;
-  overflow-x: hidden; }
-.card .card-footer {
-  padding: 16px; }
+.card {
+  /* &:hover {
+  	.card-header .card-toolbar {
+  		opacity: 1;
+  	}
+  } */ }
+  .card .card-header {
+    border-bottom: 1px solid #eaeaea; }
+    .card .card-header .card-toolbar {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      float: right;
+      position: relative;
+      top: -4px;
+      /* opacity: 0; */ }
+  .card .card-body {
+    max-height: 170px;
+    overflow-y: auto;
+    overflow-x: hidden; }
+  .card .card-footer {
+    padding: 16px; }
 
 .notes .col-sm-3 {
   padding: 0 8px; }
