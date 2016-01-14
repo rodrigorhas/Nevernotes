@@ -30,9 +30,35 @@ angular.module("App")
 				return result;
 			};
 
+			var colors = [
+				"alizarin",
+				"sun_flower",
+				"orange",
+				"silver",
+				"abestos",
+				"emerald",
+				"nephritis",
+				"green_sea",
+				"peter_river",
+				"belize_hole",
+				"wisteria",
+				"amethyst",
+				"wet_asphalt",
+				"mid_blue"
+			];
+
+			window.random = function () {
+				return Math.floor(Math.random() * colors.length);
+			}
+
 			store.loadData("notes", function () {
 	    		$timeout(() => {
-	    			$scope.notes = chunk(store.get("notes"), 4);
+	    			var notes = store.get("notes");
+	    			notes.forEach(function (item) {
+	    				item.color = colors[random()];
+	    			});
+
+	    			$scope.notes = chunk(notes, 4);
 	    			//$scope.notes = store.get("notes");
 	    		});
 			});
