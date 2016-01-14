@@ -210,11 +210,16 @@
 			position: relative;
 			top: -4px;
 
-			& > li > a {
-				font-size: 18px;
-				top: -4px;
-				padding: 6px 18px;
+			& > li {
+				display: inline-block;
+
+				& > a {
+					font-size: 18px;
+					top: -4px;
+					padding: 6px 14px;
+				}
 			}
+
 		}
 	}
 

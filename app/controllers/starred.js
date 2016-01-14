@@ -6,16 +6,17 @@ angular.module("App")
 				$(e.target).parents(".card").find(".color-picker").trigger("cp:toggle");
 			}
 
-			$scope.removeStar = function (id) {
+			$scope.toggleStar = function (note) {
+				note.starred = (note.starred == "1") ? "0" : "1";
+
+				var opts = {nid: note.id, starred: note.starred};
+
 				$.ajax({
 					url: "app/requests/star.php",
 					method: "post",
-					data: {nid: id, starred: 0},
+					data: opts,
 					success: function () {
-						for (var i = 0; i < $scope.starred.length; i++) {
-							if($scope.starred[i].id == id)
-								$timeout(() => $scope.starred.splice(i, 1));
-						};
+						$timeout(() => $scope.starred = chunk(store.get("notes"), 4));
 					}
 				});
 			}

@@ -9,7 +9,7 @@ angular.module("App")
 
 		.when('/starred', {
 			templateUrl: "templates/starred.html",
-			controller: "starredController"
+			controller: "listController"
 		})
 
 		.when('/edit/:nid', {

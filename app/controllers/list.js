@@ -7,8 +7,6 @@ angular.module("App")
 			}
 
 			$scope.toggleStar = function (note) {
-
-				console.log(note);
 				note.starred = (note.starred == "1") ? "0" : "1";
 
 				var opts = {nid: note.id, starred: note.starred};
@@ -16,7 +14,10 @@ angular.module("App")
 				$.ajax({
 					url: "app/requests/star.php",
 					method: "post",
-					data: opts
+					data: opts,
+					success: function () {
+						$timeout(() => $scope.notes = chunk(store.get("notes") ,4))
+					}
 				});
 			}
 

@@ -142,10 +142,12 @@
       float: right;
       position: relative;
       top: -4px; }
-      .card .card-header .card-toolbar > li > a {
-        font-size: 18px;
-        top: -4px;
-        padding: 6px 18px; }
+      .card .card-header .card-toolbar > li {
+        display: inline-block; }
+        .card .card-header .card-toolbar > li > a {
+          font-size: 18px;
+          top: -4px;
+          padding: 6px 14px; }
   .card .card-body {
     max-height: 170px;
     width: 100%;

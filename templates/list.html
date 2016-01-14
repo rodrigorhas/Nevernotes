@@ -6,6 +6,11 @@
             {{note.title}}
 
                 <ul class="card-toolbar">
+                    <li>
+                        <a href="" class="btn btn-link" ng-click="toggleStar(note)">
+                            <i class="zmdi" ng-class="{'zmdi-star': note.starred == 1, 'zmdi-star-outline': note.starred == 0}"></i>
+                        </a>
+                    </li>
                     <li class="dropdown">
                         <a data-toggle="dropdown" href="" class="btn btn-link"><icon name="more-vert"></icon></a>
                         <ul class="dropdown-menu dm-icon pull-right">
@@ -22,9 +27,6 @@
                                 <a href="">Excluir</a>
                             </li>
                             <li>
-                                <a ng-show="note.starred == 0" href="" ng-click="toggleStar(note)">Favoritar</a>
-                                <a ng-show="note.starred == 1" href="" ng-click="toggleStar(note)">Desfavoritar</a>
-                            </li>
                             <li>
                                 <a href="">Renomear</a>
                             </li>
