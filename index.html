@@ -18,6 +18,11 @@
 				
 				<div class="col-lg-2"></div>
 				<div class="col-lg-8">
+
+					<div class="searchbar">
+						<input type="text" placeholder="Pesquise por tags">
+					</div>
+
 					<div class="easy-post">
 						<div class="content-wrapper">
 							<textarea ng-model="post.value" placeholder="Escreva..." rows="4"></textarea>
@@ -25,7 +30,7 @@
 						<div class="tag-manager">
 							<div class="input-group tag-input">
 		                        <span class="input-group-addon"><i class="zmdi zmdi-tag"></i></span>
-                                <input type="text" ng-model="post.tagInput" ng-keydown="post.onTagInputKeydown($event)" ng- placeholder="Add tags">
+                                <input type="text" ng-model="post.tagInput" ng-keydown="post.onTagInputKeydown($event)" placeholder="Adicionar tags">
 		                    </div>
 
 							<div class="content" ng-show="post.tags.length">
