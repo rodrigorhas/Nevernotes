@@ -82,7 +82,7 @@
 					</div>
 
 					<div class="post-list">
-						<div class="post" ng-repeat="$post in list">
+						<div class="post" ng-repeat="$post in list | filterByTags: getTags(search)">
 							<div class="content">
 								{{$post.text}}
 							</div>

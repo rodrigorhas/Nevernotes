@@ -1,4 +1,26 @@
 angular.module("App", [])
+
+	.filter("filterByTags", function () {
+		return function (items, tags) {
+			if(tags.length)
+				return items.filter(function (item, index) {
+
+					var match = false;
+
+					item.tags.forEach(function (tag, tagIndex) {
+						tags.forEach(function (searchTag) {
+							if(tag.name.indexOf(searchTag.slice(1)) > -1)
+								match = true;
+						});
+					});
+
+					return match;
+				});
+			else
+				return items;
+		}
+	})
+
 	.controller("Main", function ($scope) {
 
 		var store = "nevernotes-store";
@@ -7,6 +29,14 @@ angular.module("App", [])
 			var s = localStorage.getItem(store);
 			if(s && s.length)
 				$scope.list = JSON.parse(s);
+		}
+
+		function getTags ( str ) {
+			return str.match(/\S*#(?:\[[^\]]+\]|\S+)/ig) || [];
+		}
+
+		$scope.getTags = function (terms) {
+			return getTags(terms);
 		}
 
 		$scope.search = "";
@@ -23,6 +53,9 @@ angular.module("App", [])
 
 				if(key == 13) {
 					if(this.tagInput) {
+
+						if(this.tagInput.indexOf(" ") > -1) this.tagInput = this.tagInput.replace(/\s+/g, '-');
+
 						this.tags.push({name: this.tagInput});
 						this.tagInput = "";
 					}
@@ -61,23 +94,17 @@ angular.module("App", [])
 		$scope.list = [];
 		loadStore();
 
-		$scope.addTag = function (tagName) {
-			$scope.post.tags.push({id: $scope.post.tags.length + 1, name: tagName})
-		}
-
 		$scope.removeTag = function (index) {
 			$scope.post.tags.splice(index, 1);
 		}
 
 		$scope.addToSearchbar = function ( str ) {
 
-			if(str.indexOf(" ") > -1) str = "\"" + str + "\"";
-
 			str = "#" + str;
 
 			 var terms = $scope.search,
 			 	valid = true,
-			 	tags = terms.match(/\#'.*?'|\#".*?"|\S+/ig) || [];
+			 	tags = getTags(terms);
 
 			for (var i = 0; i < tags.length; i++) {
 			 	var tag = tags[i];
