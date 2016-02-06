@@ -20,7 +20,7 @@
 				<div class="col-lg-8">
 
 					<div class="searchbar">
-						<input type="text" placeholder="Pesquise por tags">
+						<input type="text" ng-model="search" placeholder="Pesquise por tags">
 					</div>
 
 					<div class="easy-post">
@@ -89,7 +89,7 @@
 							<div class="tags" ng-show="$post.tags.length">
 								<ul>
 									<li ng-repeat="tag in $post.tags">
-										<span class="label label-default">
+										<span class="label label-default" ng-click="addToSearchbar(tag.name)">
 											{{tag.name}}
 										</span>
 									</li>

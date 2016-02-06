@@ -9,6 +9,8 @@ angular.module("App", [])
 				$scope.list = JSON.parse(s);
 		}
 
+		$scope.search = "";
+
 		$scope.post = {
 			value: "",
 			addingPost: false,
@@ -65,6 +67,24 @@ angular.module("App", [])
 
 		$scope.removeTag = function (index) {
 			$scope.post.tags.splice(index, 1);
+		}
+
+		$scope.addToSearchbar = function ( str ) {
+
+			if(str.indexOf(" ") > -1) str = "\"" + str + "\"";
+
+			str = "#" + str;
+
+			 var terms = $scope.search,
+			 	valid = true,
+			 	tags = terms.match(/\#'.*?'|\#".*?"|\S+/ig) || [];
+
+			for (var i = 0; i < tags.length; i++) {
+			 	var tag = tags[i];
+			 	if(tag == str) valid = false;
+			 };
+
+			 if(valid) $scope.search = $scope.search + " " + str;
 		}
 
 	});
