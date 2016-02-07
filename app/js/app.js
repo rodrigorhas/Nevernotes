@@ -111,7 +111,7 @@ angular.module("App", [])
 			 	if(tag == str) valid = false;
 			 };
 
-			 if(valid) $scope.search = $scope.search + " " + str;
+			 if(valid) $scope.search = $scope.search + ($scope.search.length ? " " : "") + str;
 		}
 
 	});
