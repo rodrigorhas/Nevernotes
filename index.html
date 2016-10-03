@@ -75,10 +75,10 @@
 			</div>
 			<div class="col-lg-8">
 				<div class="col-lg-8 col-lg-offset-2">
-					<p ng-show="data">{{search}}</p>
+					<p>{{data}}</p>
 
 					<div class="post-list">
-						<div class="post" ng-repeat="$post in store | filterByTags: getTags(search)">
+						<div class="post" ng-repeat="$post in store | filter: {text: extractText(search)} | filterByTags: getTags(search)"> <!-- filterByTags: getTags(search) -->
 							<div class="content">
 								<span class="text">{{$post.text}}</span>
 								<button class="remove-button btn btn-link" data-toggle="tooltip" data-placement="top" title="Remove" ng-click="removePost($index)">
