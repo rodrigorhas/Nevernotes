@@ -41,7 +41,7 @@ angular.module("App", ['ngStorage'])
 		$scope.post = {
 			value: "",
 			addingPost: false,
-			tags: [],
+			tags: [{name: moment().format("L").replace(/\//g, '-')}],
 
 			tagInput: "",
 
@@ -76,8 +76,6 @@ angular.module("App", ['ngStorage'])
 
 					if(self.tags)
 						post.tags = self.tags;
-
-					post.tags.push({name: moment().format("L").replace(/\//g, '-')});
 
 					$scope.store.push(post);
 				}
