@@ -30,6 +30,7 @@ body {
 				border: 0;
 				background-color: inherit;
 				padding: 4px 4px 5px 4px;
+				width: calc(100% - 37px);
 			}
 
 			span.input-group-addon {
@@ -86,8 +87,24 @@ body {
 		border-radius: 2px;
 		margin: 16px 0;
 
+		&:hover {
+			.content .remove-button {
+				display: block;
+			}
+		}
+
 		.content {
 			padding: 16px;
+
+			position: relative;
+
+			.remove-button {
+				display: none;
+				position: absolute;
+				right: 12px;
+				top: 12px;
+				border-radius: 100%;
+			}
 		}
 
 		.tags {

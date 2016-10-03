@@ -1,4 +1,4 @@
-angular.module("App", [])
+angular.module("App", ['ngStorage'])
 
 	.filter("filterByTags", function () {
 		return function (items, tags) {
@@ -21,22 +21,19 @@ angular.module("App", [])
 		}
 	})
 
-	.controller("Main", function ($scope) {
+	.run(function ($rootScope, $localStorage) {
+		$rootScope.store = $localStorage["nevernotes-store"] || [];
+	})
 
-		var store = "nevernotes-store";
+	.controller("Main", function ($rootScope, $scope, $timeout, $localStorage) {
 
-		function loadStore () {
-			var s = localStorage.getItem(store);
-			if(s && s.length)
-				$scope.list = JSON.parse(s);
-		}
+		$scope.store = $rootScope.store;
 
-		function getTags ( str ) {
+		// initialize tooltips
+		$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
+
+		$scope.getTags = function (str) {
 			return str.match(/\S*#(?:\[[^\]]+\]|\S+)/ig) || [];
-		}
-
-		$scope.getTags = function (terms) {
-			return getTags(terms);
 		}
 
 		$scope.search = "";
@@ -62,37 +59,31 @@ angular.module("App", [])
 				}
 			},
 
+			reset: function () {
+				var self = this;
+
+				self.value = "";
+				self.tags = [];
+			},
+
 			save: function () {
 
-				var s = localStorage.getItem(store),
-					self = this;
+				var self = this;
 
-				s = JSON.parse(s);
-
-				if(!s)
-					s = [];
-
-				if(s) {
+				if($scope.store) {
 					var post = {text: self.value, tags: []};
 
 					if(self.tags)
 						post.tags = self.tags;
 
-					s.push(post);
-
-					s = JSON.stringify(s);
-					localStorage.setItem(store, s);
+					$scope.store.push(post);
 				}
 
-				$scope.post.value = "";
-				$scope.post.tags = [];
+				self.reset();
 
-				loadStore();
+				console.log($scope.store);
 			}
 		}
-
-		$scope.list = [];
-		loadStore();
 
 		$scope.removeTag = function (index) {
 			$scope.post.tags.splice(index, 1);
@@ -104,7 +95,7 @@ angular.module("App", [])
 
 			 var terms = $scope.search,
 			 	valid = true,
-			 	tags = getTags(terms);
+			 	tags = $scope.getTags(terms);
 
 			for (var i = 0; i < tags.length; i++) {
 			 	var tag = tags[i];
@@ -112,6 +103,10 @@ angular.module("App", [])
 			 };
 
 			 if(valid) $scope.search = $scope.search + ($scope.search.length ? " " : "") + str;
+		}
+
+		$scope.removePost = function (index) {
+
 		}
 
 	});

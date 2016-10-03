@@ -13,11 +13,8 @@
 
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-2"></div>
-			<div class="col-lg-8">
-				
-				<div class="col-lg-2"></div>
-				<div class="col-lg-8">
+			<div class="col-lg-8 col-lg-offset-2">
+				<div class="col-lg-8 col-lg-offset-2">
 
 					<div class="searchbar">
 						<input type="text" ng-model="search" placeholder="Pesquise por tags">
@@ -30,7 +27,7 @@
 						<div class="tag-manager">
 							<div class="input-group tag-input">
 		                        <span class="input-group-addon"><i class="zmdi zmdi-tag"></i></span>
-                                <input type="text" ng-model="post.tagInput" ng-keydown="post.onTagInputKeydown($event)" placeholder="Adicionar tags">
+                                <input type="text" ng-model="post.tagInput" ng-keydown="post.onTagInputKeydown($event)" placeholder="Pressione enter para adicionar a tag">
 		                    </div>
 
 							<div class="content" ng-show="post.tags.length">
@@ -81,12 +78,17 @@
 						</div>
 					</div>
 
+					<p ng-show="data">{{search}}</p>
+
 					<div class="post-list">
-						<div class="post" ng-repeat="$post in list | filterByTags: getTags(search)">
+						<div class="post" ng-repeat="$post in store | filterByTags: getTags(search)">
 							<div class="content">
-								{{$post.text}}
+								<span class="text">{{$post.text}}</span>
+								<button class="remove-button btn btn-link" data-toggle="tooltip" data-placement="top" title="Remove" ng-click="removePost($index)">
+									<i class="zmdi zmdi-close"></i>
+								</button>
 							</div>
-							<div class="tags" ng-show="$post.tags.length">
+							<div class="tags" ng-if="$post.tags.length">
 								<ul>
 									<li ng-repeat="tag in $post.tags">
 										<span class="label label-default" ng-click="addToSearchbar(tag.name)">
@@ -98,17 +100,14 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-2"></div>
-
-				<!-- <button class="btn btn-default"></button> -->
-
 			</div>
-			<div class="col-lg-2"></div>
 		</div>
 	</div>
 
 	<script src="app/vendors/jquery/dist/jquery.min.js"></script>
 	<script src="app/vendors/angular/angular-min.js"></script>
+
+	<script src="bower_components/ngstorage/ngStorage.min.js"></script>
 
 	<script src="app/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
 
