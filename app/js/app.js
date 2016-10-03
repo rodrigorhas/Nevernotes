@@ -30,7 +30,12 @@ angular.module("App", ['ngStorage'])
 		$scope.store = $rootScope.store;
 
 		// initialize tooltips
-		$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
+		$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); $(".note-list").niceScroll({
+			cursorcolor: "#ccc",
+			cursorwitdh: '5px',
+			cursoropacitymin: 0.1,
+			cursoropacitymax: 1
+		});})
 
 		$scope.getTags = function (str) {
 			return str.match(/\S*#(?:\[[^\]]+\]|\S+)/ig) || [];
@@ -71,6 +76,7 @@ angular.module("App", ['ngStorage'])
 				var self = this;
 
 				if($scope.store) {
+
 					var post = {text: self.value, tags: []};
 
 					if(self.tags)
@@ -106,7 +112,7 @@ angular.module("App", ['ngStorage'])
 		}
 
 		$scope.removePost = function (index) {
-
+			$scope.store.splice(index, 1);
 		}
 
 	});
