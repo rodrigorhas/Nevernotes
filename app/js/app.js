@@ -128,11 +128,15 @@ angular.module("App", ['ngStorage'])
 		}
 
 		$scope.editPost = function (post, event) {
-			console.log(post);
 			$scope.post.value = post.text;
 			$scope.post.tags = post.tags;
 			$scope.post.id = post.id;
 
+			// remove todas as classes note-edit antes de adicionar
+			// no target
+			$(".post").removeClass("note-edit");
+
+			// adiciona a classe note-edit no target
 			$(event.target).parents(".post").addClass("note-edit");
 		}
 
