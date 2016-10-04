@@ -21,13 +21,18 @@ angular.module("App", ['ngStorage'])
 		}
 	})
 
-	.run(function ($rootScope, $localStorage) {
-		$rootScope.store = $localStorage["nevernotes-store"] || [];
+	.run(function ($localStorage) {
+		if(!$localStorage["nevernotes-store"]) {
+			$localStorage["nevernotes-store"] = [];
+		}
 	})
 
-	.controller("Main", function ($rootScope, $scope, $timeout, $localStorage) {
+	.controller("Main", function ($scope, $timeout, $localStorage) {
 
-		$scope.store = $rootScope.store;
+		$scope.loadStore = function () {
+			$scope.store = $localStorage["nevernotes-store"];
+		}
+		$scope.loadStore();
 
 		// initialize tooltips
 		$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
@@ -81,8 +86,7 @@ angular.module("App", ['ngStorage'])
 				}
 
 				self.reset();
-
-				console.log($scope.store);
+				$scope.loadStore();
 			}
 		}
 
