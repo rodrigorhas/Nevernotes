@@ -75,16 +75,32 @@
 			</div>
 			<div class="col-lg-6">
 				<div class="col-lg-10 col-lg-offset-1">
-					<p>{{data}}</p>
-
 					<div class="post-list">
-						<div class="post" ng-repeat="$post in store | filter: {text: extractText(search)} | filterByTags: getTags(search)"> <!-- filterByTags: getTags(search) -->
+						<div class="post" ng-repeat="$post in store | filter: {text: extractText(search)} | filterByTags: getTags(search)">
 							<div class="content">
 								<span class="text">{{$post.text}}</span>
-								<button class="remove-button btn btn-link" data-toggle="tooltip" data-placement="top" title="Remove" ng-click="removePost($index)">
-									<i class="zmdi zmdi-close"></i>
-								</button>
-								<span class="pull-right clearfix"></span>
+								<!-- <div class="note-menu">
+									<a class="btn btn-link note-menu-trigger" tabindex="0">
+										<i class="zmdi zmdi-chevron-down"></i>
+								
+										<ul class="note-menu-list">
+											<li>
+												<button>Editar</button>
+											</li>
+											<li>
+												<button>Deletar</button>
+											</li>
+										</ul>
+									</a>
+								</div> -->
+								<div class="note-menu">
+									<button class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Editar" ng-click="editPost($post, $event)">
+										<i class="zmdi zmdi-edit"></i>
+									</button>
+									<button class="remove-button btn btn-link" data-toggle="tooltip" data-placement="top" title="Remover" ng-click="removePost($index)">
+										<i class="zmdi zmdi-close"></i>
+									</button>
+								</div>
 							</div>
 							<div class="tags" ng-if="$post.tags.length">
 								<ul>

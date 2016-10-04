@@ -32,7 +32,12 @@ angular.module("App", ['ngStorage'])
 		$scope.loadStore = function () {
 			$scope.store = $localStorage["nevernotes-store"];
 		}
+
 		$scope.loadStore();
+
+		function randomHash () {
+			return Math.random().toString(36).substring(2);
+		}
 
 		// initialize tooltips
 		$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
@@ -44,6 +49,7 @@ angular.module("App", ['ngStorage'])
 		$scope.search = "";
 
 		$scope.post = {
+			id: "",
 			value: "",
 			addingPost: false,
 			tags: [{name: moment().format("L").replace(/\//g, '-')}],
@@ -68,7 +74,8 @@ angular.module("App", ['ngStorage'])
 				var self = this;
 
 				self.value = "";
-				self.tags = [];
+				self.tags = [{name: moment().format("L").replace(/\//g, '-')}];
+				self.id = "";
 			},
 
 			save: function () {
@@ -77,16 +84,22 @@ angular.module("App", ['ngStorage'])
 
 				if($scope.store) {
 
-					var post = {text: self.value, tags: []};
+					var post = {id: self.id || randomHash(), text: self.value, tags: self.tags || []};
 
-					if(self.tags)
-						post.tags = self.tags;
+					for (var i = 0; i < $scope.store.length; i++) {
+						var item = $scope.store[i];
+						if(item.id == self.id) {
+							$scope.store[i] = post;
+							self.reset();
+							$scope.loadStore();
+							return;
+						}
+					}
 
 					$scope.store.push(post);
 				}
 
 				self.reset();
-				$scope.loadStore();
 			}
 		}
 
@@ -114,12 +127,22 @@ angular.module("App", ['ngStorage'])
 			$scope.store.splice(index, 1);
 		}
 
+		$scope.editPost = function (post, event) {
+			console.log(post);
+			$scope.post.value = post.text;
+			$scope.post.tags = post.tags;
+			$scope.post.id = post.id;
+
+			$(event.target).parents(".post").addClass("note-edit");
+		}
+
 		$scope.extractText = function (str) {
 			return str
 				.replace(/\S*#(?:\[[^\]]+\]|\S+)/g, function () {
 					return "";
 				})
-				.replace('#', '');
+				.replace('#', '')
+				.trim();
 		}
 
 	});
