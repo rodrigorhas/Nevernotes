@@ -100,6 +100,15 @@ angular.module("App", ['ngStorage'])
 				}
 
 				self.reset();
+			},
+
+			processInput: function (event) {
+				var self = this,
+					key = event.which || event.keyCode;
+
+				if(self.enterOption && key == 13) {
+					self.save();
+				}
 			}
 		}
 

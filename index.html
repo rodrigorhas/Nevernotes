@@ -16,20 +16,24 @@
 			<div class="col-lg-6">
 				<div class="col-lg-4 fixed">
 					<div class="searchbar">
-						<input type="text" ng-model="search" placeholder="Pesquise por tags">
+						<input type="text" ng-model="search" placeholder="Pesquise por tags ou notas">
 					</div>
 
 					<div class="easy-post">
 						<div class="content-wrapper">
-							<textarea ng-model="post.value" placeholder="Escreva..." rows="4"></textarea>
+							<textarea ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
 						</div>
+						<div class="padding">
+					      <input type="checkbox" ng-model="post.enterOption" id="enter-option" checked="checked" />
+					      <label for="enter-option">Aperte enter para criar nota</label>
+					    </div>
 						<div class="tag-manager">
 							<div class="input-group tag-input">
 								<span class="input-group-addon"><i class="zmdi zmdi-tag"></i></span>
 								<input type="text" ng-model="post.tagInput" ng-keydown="post.onTagInputKeydown($event)" placeholder="Pressione enter para adicionar a tag">
 							</div>
 
-							<div class="content" ng-show="post.tags.length">
+							<div class="content" ng-if="post.tags.length">
 								<ul>
 									<li ng-repeat="tag in post.tags">
 										<span class="badge">
