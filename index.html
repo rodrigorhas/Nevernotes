@@ -24,7 +24,7 @@
 							<textarea ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
 						</div>
 						<div class="padding">
-					      <input type="checkbox" ng-model="post.enterOption" id="enter-option" checked="checked" />
+					      <input type="checkbox" ng-model="post.enterOption" id="enter-option" />
 					      <label for="enter-option">Aperte enter para criar nota</label>
 					    </div>
 						<div class="tag-manager">
@@ -84,25 +84,17 @@
 							<div class="content">
 								<span class="text">{{$post.text}}</span>
 								<!-- <div class="note-menu">
-									<a class="btn btn-link note-menu-trigger" tabindex="0">
-										<i class="zmdi zmdi-chevron-down"></i>
-								
-										<ul class="note-menu-list">
-											<li>
-												<button>Editar</button>
-											</li>
-											<li>
-												<button>Deletar</button>
-											</li>
-										</ul>
-									</a>
-								</div> -->
-								<div class="note-menu">
 									<button class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Editar" ng-click="editPost($post, $event)">
 										<i class="zmdi zmdi-edit"></i>
 									</button>
 									<button class="remove-button btn btn-link" data-toggle="tooltip" data-placement="top" title="Remover" ng-click="removePost($index)">
 										<i class="zmdi zmdi-close"></i>
+									</button>
+								</div> -->
+
+								<div class="note-menu">
+									<button class="btn btn-link" ng-click="NoteMenu.position($event, $post, $index)">
+										<i class="zmdi zmdi-chevron-down"></i>
 									</button>
 								</div>
 							</div>
@@ -121,6 +113,16 @@
 			</div>
 		</div>
 	</div>
+
+			<!-- <i class="zmdi zmdi-chevron-down"></i> -->
+	<ul class="note-menu-list">
+		<li>
+			<button ng-click="NoteMenu.hide();NoteMenu.options.Edit()">Editar</button>
+		</li>
+		<li>
+			<button ng-click="NoteMenu.hide();NoteMenu.options.Delete()">Deletar</button>
+		</li>
+	</ul>
 
 	<script src="app/vendors/jquery/dist/jquery.min.js"></script>
 	<script src="app/vendors/angular/angular-min.js"></script>
