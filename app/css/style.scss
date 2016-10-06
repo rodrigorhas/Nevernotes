@@ -4,6 +4,10 @@ body {
 
 .fixed {
 	position: fixed;
+
+	@media screen and (max-width: 767px) {
+		position: relative;
+	}
 }
 
 .padding {

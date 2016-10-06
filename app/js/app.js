@@ -29,6 +29,16 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 
 .controller("Main", function ($scope, $timeout, $localStorage, fileSystem, $sce) {
 
+	$scope.debugMode = true;
+
+	$scope.log = function (text) {
+		console.log.apply(console, arguments);
+		var p = $('<div></div>');
+		p.text(JSON.stringify(text));
+
+		$('.log').append(p);
+	}
+
 	$scope.loadStore = function () {
 		$scope.store = $localStorage["nevernotes-store"];
 
@@ -91,12 +101,23 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 			reset: function () {
 				var self = this;
 
+				// reset textarea
 				self.value = "";
+
+				// reset tags
 				self.tags = [{name: moment().format("L").replace(/\//g, '-')}];
+
+				// reset id
 				self.id = "";
+
+				// reset audio
 				self.audios = [];
 
+				// reset audioMode
 				$scope.audioMode = false;
+
+				// reset photoMode
+				$scope.photoMode = false;
 			},
 
 			save: function () {
@@ -231,9 +252,9 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 
 					self.currentPost.audios.forEach(function (audio) {
 						fileSystem.deleteFile(audio.name).then(function () {
-							console.log('File deleted ' + audio.name);
+							$scope.log('File deleted ' + audio.name);
 						}, function (e) {
-							console.log(e);
+							$scope.log(e);
 						})
 					});
 
@@ -246,38 +267,40 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 			$scope.post.audios.splice(index, 1);
 		}
 
-		var audio_context;
-		var recorder;
+		$scope.Audio = {
+			context: null,
+			recorder: null
+		}
 
 		function startUserMedia(stream) {
-			var input = audio_context.createMediaStreamSource(stream);
-			console.log('Media stream created.');
+			var input = $scope.Audio.context.createMediaStreamSource(stream);
+			$scope.log('Media stream created.');
 
 		    // Uncomment if you want the audio to feedback directly
-		    //input.connect(audio_context.destination);
-		    //console.log('Input connected to audio context destination.');
+		    //input.connect($scope.Audio.context.destination);
+		    //$scope.log('Input connected to audio context destination.');
 
-		    recorder = new Recorder(input);
-		    console.log('Recorder initialised.');
+		    $scope.Audio.recorder = new Recorder(input);
+		    $scope.log('Recorder initialised.');
 		}
 
 		$scope.startRecording = function (button) {
-			recorder && recorder.record();
-			console.log('Recording...');
+			$scope.Audio.recorder && $scope.Audio.recorder.record();
+			$scope.log('Recording...');
 		}
 
 		$scope.stopRecording = function (button) {
-			recorder && recorder.stop();
-			console.log('Stopped recording.');
+			$scope.Audio.recorder && $scope.Audio.recorder.stop();
+			$scope.log('Stopped recording.');
 
 		    // create WAV download link using audio data blob
 		    createDownloadLink();
 
-		    recorder.clear();
+		    $scope.Audio.recorder.clear();
 		}
 
 		function createDownloadLink() {
-			recorder && recorder.exportWAV(function(blob) {
+			$scope.Audio.recorder && $scope.Audio.recorder.exportWAV(function(blob) {
 
 				var audio = {name: new Date().toISOString() + '.wav'};
 
@@ -308,10 +331,10 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 		}
 
 		fileSystem.getCurrentUsage().then(function (e) {
-			console.log(e);
+			$scope.log(e);
 			if(e.quota <= 0) {
 				fileSystem.requestQuota(200 * 1024 * 1024).then(function (e) {
-					console.log(e);
+					$scope.log(e);
 				});
 			}
 		})
@@ -323,20 +346,22 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 		        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 		        window.URL = window.URL || window.webkitURL;
 
-		        audio_context = new AudioContext;
-		        console.log('Audio context set up.');
-		        console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+		        $scope.Audio.context = new AudioContext();
+		        $scope.log('Audio context set up.');
+		        $scope.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
 		    } catch (e) {
 		    	alert('No web audio support in this browser!');
 		    }
 
+
 		    navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-		    	console.log('No live audio input: ' + e);
+		    	$scope.log("Um erro ocorreu no getUserMedia");
+		    	$scope.log(e);
 		    });
 		};
 
 		function getAudioFile (file) {
-			console.log("getting file " +  file.name);
+			$scope.log("getting file " +  file.name);
 
 			return fileSystem.getFile('/' + file.name).then(function (e) {
 				return  URL.createObjectURL(e);

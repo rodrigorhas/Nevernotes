@@ -2,19 +2,24 @@
 <html lang="en" ng-app="App" ng-controller="Main">
 <head>
 	<meta charset="UTF-8">
-	<title>Teste</title>
+	<title>Nevernotes</title>
 
 	<link rel="stylesheet" href="fonts/Material-Design-Iconic-Font.css">
 	<link rel="stylesheet" href="app/vendors/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="app/css/app.min.css">
 	<link rel="stylesheet" href="app/css/style.css">
+
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
 <body>
 
 	<div class="container">
+
+		<div class="log" ng-show="debugMode == true"></div>
+
 		<div class="row">
 			<div class="col-lg-6">
-				<div class="col-lg-4 fixed">
+				<div class="col-lg-4 col-sm-12 fixed">
 					<div class="searchbar">
 						<input type="text" ng-model="search" placeholder="Pesquise por tags ou notas">
 					</div>
@@ -27,7 +32,7 @@
 							<input type="checkbox" ng-model="post.enterOption" id="enter-option" />
 							<label for="enter-option">Aperte enter para criar nota</label>
 						</div>
-						<div class="padding audio-list" ng-show="audioMode == true">
+						<div class="padding audio-list" ng-if="audioMode == true">
 							<div>
 								<button class="btn btn-primary" ng-mousedown="startRecording()" ng-mouseup="stopRecording()">
 									<i class="zmdi zmdi-mic"></i>
@@ -43,6 +48,9 @@
 									</button>
 								</li>								
 							</ul>
+						</div>
+						<div class="padding photo-list" ng-if="photoMode == true">
+							<input type="file" id="take-picture" accept="image/*">
 						</div>
 						<div class="tag-manager">
 							<div class="input-group tag-input">
@@ -74,7 +82,7 @@
 									</button>
 								</li>
 								<li>
-									<button class="btn btn-link">
+									<button class="btn btn-link" ng-click="photoMode = true">
 										<i class="zmdi zmdi-camera"></i>
 									</button>
 								</li>
