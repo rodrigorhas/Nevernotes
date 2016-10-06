@@ -1,0 +1,21 @@
+CACHE MANIFEST
+fonts/Material-Design-Iconic-Font.css
+app/vendors/bootstrap/dist/css/bootstrap.min.css
+app/css/app.min.css
+app/css/style.css
+app/vendors/jquery/dist/jquery.min.js
+app/vendors/angular/angular-min.js
+bower_components/ngstorage/ngStorage.min.js
+bower_components/moment/min/moment.min.js
+bower_components/ngtouch/build/ngTouch.min.js
+app/vendors/recorderjs/index.js
+app/vendors/angular-fs/fs.js
+app/vendors/bootstrap/dist/js/bootstrap.min.js
+app/vendors/waves/waves.min.js
+app/vendors/auto-size/jquery.autosize.min.js
+app/vendors/nicescroll/jquery.nicescroll.min.js
+app/js/app.js
+app/services/store.js
+app/directives/btn-class.js
+app/directives/icon.js
+app/directives/autogrow.js

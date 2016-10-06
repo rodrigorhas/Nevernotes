@@ -1,4 +1,4 @@
-angular.module("App", ['ngStorage', 'fileSystem'])
+angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 .filter("filterByTags", function () {
 	return function (items, tags) {
@@ -163,6 +163,7 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 				})
 
 				$scope.store.push(post);
+				$scope.log("Note saved");
 			}
 
 			if(post.audios.length) {
@@ -312,7 +313,8 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 		recorder: null,
 		recording: false,
 
-		startRecording: function () {
+		startRecording: function (event) {
+			event.preventDefault();
 			var self = this;
 
 			self.recorder && self.recorder.record();

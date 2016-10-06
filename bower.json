@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "ngstorage": "^0.3.11",
-    "moment": "^2.15.1"
+    "moment": "^2.15.1",
+    "ngtouch": "^1.0.1"
   }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="App" ng-controller="Main">
+<html lang="en" ng-app="App" ng-controller="Main" manifest="manifest.appcache">
 <head>
 	<meta charset="UTF-8">
 	<title>Nevernotes</title>
@@ -21,7 +21,7 @@
 			<div class="col-lg-6">
 				<div class="col-lg-4 col-sm-12 fixed">
 
-					<button class="btn btn-default" ng-click="debugMode = !debugMode">
+					<button class="btn btn-default" ng-click="debugMode = !debugMode" ng-touchstart="debugMode = !debugMode">
 						<i class="zmdi zmdi-developer-board"></i>
 						Debug
 					</button>
@@ -40,7 +40,7 @@
 						</div>
 						<div class="padding audio-list" ng-if="audioMode == true">
 							<div>
-								<button class="btn btn-primary" ng-mousedown="Audio.startRecording()" ng-mouseup="Audio.stopRecording()">
+								<button class="btn btn-primary" ng-mousedown="Audio.startRecording($event)"  ng-mouseup="Audio.stopRecording()" ng-touchstart="Audio.startRecording($event)" ng-touchend="Audio.stopRecording()">
 									<i class="zmdi zmdi-mic"></i>
 								</button>
 								Pressione para gravar.
@@ -52,7 +52,7 @@
 										{{safeUrl($audio.url)}}
 									</p>
 									<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
-									<button class="btn btn-default" ng-click="removeAudioFromPostList($index)">
+									<button class="btn btn-default" ng-touchstart="removeAudioFromPostList($index)" ng-click="removeAudioFromPostList($index)">
 										<i class="zmdi zmdi-close"></i>
 									</button>
 								</li>
@@ -64,7 +64,7 @@
 						<div class="tag-manager">
 							<div class="input-group tag-input">
 								<span class="input-group-addon"><i class="zmdi zmdi-tag"></i></span>
-								<input type="text" ng-model="post.tagInput" ng-keydown="post.onTagInputKeydown($event)" placeholder="Pressione enter para adicionar a tag">
+								<input type="text" ng-model="post.tagInput" ng-keydown="post.onTagInputKeydown($event)" placeholder="Enter para adicionar a tag">
 							</div>
 
 							<div class="content" ng-if="post.tags.length">
@@ -72,7 +72,7 @@
 									<li ng-repeat="tag in post.tags">
 										<span class="badge">
 											{{tag.name}}
-											<icon ng-click="removeTag($index)" name="close"></icon>
+											<icon ng-touchstart="removeTag($index)" ng-click="removeTag($index)" name="close"></icon>
 										</span>
 									</li>
 								</ul>
@@ -86,12 +86,12 @@
 									</button>
 								</li>
 								<li>
-									<button class="btn btn-link" ng-click="audioMode = true">
+									<button class="btn btn-link" ng-touchstart="audioMode = true" ng-click="audioMode = true">
 										<i class="zmdi zmdi-mic"></i>
 									</button>
 								</li>
 								<li>
-									<button class="btn btn-link" ng-click="photoMode = true">
+									<button class="btn btn-link" ng-touchstart="photoMode = true" ng-click="photoMode = true">
 										<i class="zmdi zmdi-camera"></i>
 									</button>
 								</li>
@@ -102,7 +102,7 @@
 								</li>
 
 								<li class="pull-right">
-									<button ng-disabled="!post.value.length" ng-click="post.save()" class="btn btn-primary">
+									<button ng-disabled="!post.value.length" ng-touchstart="post.save()" ng-click="post.save()" class="btn btn-primary">
 										Salvar
 									</button>
 								</li>
@@ -121,17 +121,17 @@
 								</p>
 								<ul class="post-audios" ng-show="$post.audios.length">
 									<li ng-repeat="$audio in $post.audios">
-										<div>
+										<span>
 											<p><b>{{$audio.name}}</b></p>
 											<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
-											<!-- <button class="btn btn-primary" ng-click="downloadAudio($audio)">
+											<!-- <button class="btn btn-primary" ng-touchstart="downloadAudio($audio)">
 												<span class="zmdi zmdi-download"></span>
 											</button> -->
-										</div>
+										</span>
 									</li>
 								</ul>
 								<div class="note-menu">
-									<button class="btn btn-link" ng-click="NoteMenu.position($event, $post, $index)">
+									<button class="btn btn-link" ng-touchstart="NoteMenu.position($event, $post, $index)" ng-click="NoteMenu.position($event, $post, $index)">
 										<i class="zmdi zmdi-chevron-down"></i>
 									</button>
 								</div>
@@ -139,7 +139,7 @@
 							<div class="tags" ng-if="$post.tags.length">
 								<ul>
 									<li ng-repeat="tag in $post.tags">
-										<span class="label label-default" ng-click="addToSearchbar(tag.name)">
+										<span class="label label-default" ng-touchstart="addToSearchbar(tag.name)" ng-click="addToSearchbar(tag.name)">
 											{{tag.name}}
 										</span>
 									</li>
@@ -155,10 +155,10 @@
 	<!-- <i class="zmdi zmdi-chevron-down"></i> -->
 	<ul class="note-menu-list">
 		<li>
-			<button ng-click="NoteMenu.hide();NoteMenu.options.Edit()">Editar</button>
+			<button ng-touchstart="NoteMenu.hide();NoteMenu.options.Edit()" ng-click="NoteMenu.hide();NoteMenu.options.Edit()">Editar</button>
 		</li>
 		<li>
-			<button ng-click="NoteMenu.hide();NoteMenu.options.Delete()">Deletar</button>
+			<button ng-touchstart="NoteMenu.hide();NoteMenu.options.Delete()" ng-click="NoteMenu.hide();NoteMenu.options.Delete()">Deletar</button>
 		</li>
 	</ul>
 
@@ -167,6 +167,7 @@
 
 	<script src="bower_components/ngstorage/ngStorage.min.js"></script>
 	<script src="bower_components/moment/min/moment.min.js"></script>
+	<script src="bower_components/ngtouch/build/ngTouch.min.js"></script>
 
 	<script src="app/vendors/recorderjs/index.js"></script>
 	<script src="app/vendors/angular-fs/fs.js"></script>
