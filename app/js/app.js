@@ -499,7 +499,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 				$scope.log("FileSystem is now empty");
 
 				$timeout(function () {
-					$scope.store = [];
+					$localStorage['nevernotes-store'] = [];
 					$scope.log("LocalStorage has been reseted");
 					alert("Reset concluido, a pagina sera recarregada !");
 					window.location.reload();
