@@ -1,4 +1,4 @@
-angular.module("App", ['ngStorage'])
+angular.module("App", ['ngStorage', 'fileSystem'])
 
 .filter("filterByTags", function () {
 	return function (items, tags) {
@@ -27,10 +27,26 @@ angular.module("App", ['ngStorage'])
 	}
 })
 
-.controller("Main", function ($scope, $timeout, $localStorage) {
+.controller("Main", function ($scope, $timeout, $localStorage, fileSystem, $sce) {
 
 	$scope.loadStore = function () {
 		$scope.store = $localStorage["nevernotes-store"];
+
+		$scope.setAudiosUrl();
+	}
+
+	$scope.setAudiosUrl = function () {
+		$scope.store.forEach(function (item) {
+			if(item.audios) {
+				item.audios.forEach(function (audio) {
+					var audioFile = getAudioFile(audio);
+					
+					audioFile.then(function (url) {
+						audio.url = url;
+					})
+				});
+			}
+		});
 	}
 
 	$scope.loadStore();
@@ -54,6 +70,7 @@ angular.module("App", ['ngStorage'])
 			addingPost: false,
 			enterOption: true,
 			tags: [{name: moment().format("L").replace(/\//g, '-')}],
+			audios: [],
 
 			tagInput: "",
 
@@ -85,7 +102,12 @@ angular.module("App", ['ngStorage'])
 
 				if($scope.store) {
 
-					var post = {id: self.id || randomHash(), text: self.value, tags: self.tags || []};
+					var post = {
+						id: self.id || randomHash(),
+						text: self.value,
+						tags: self.tags,
+						audios: self.audios
+					};
 
 					for (var i = 0; i < $scope.store.length; i++) {
 						var item = $scope.store[i];
@@ -100,6 +122,7 @@ angular.module("App", ['ngStorage'])
 					$scope.store.push(post);
 				}
 
+				$scope.setAudiosUrl();
 				self.reset();
 			},
 
@@ -115,6 +138,7 @@ angular.module("App", ['ngStorage'])
 		}
 
 		$scope.removeTag = function (index) {
+
 			$scope.post.tags.splice(index, 1);
 		}
 
@@ -136,11 +160,11 @@ angular.module("App", ['ngStorage'])
 
 		$scope.extractText = function (str) {
 			return str
-				.replace(/\S*#(?:\[[^\]]+\]|\S+)/g, function () {
-					return "";
-				})
-				.replace('#', '')
-				.trim();
+			.replace(/\S*#(?:\[[^\]]+\]|\S+)/g, function () {
+				return "";
+			})
+			.replace('#', '')
+			.trim();
 		}
 
 		$scope.NoteMenu = {
@@ -176,8 +200,6 @@ angular.module("App", ['ngStorage'])
 				self.currentPost = post;
 				self.index = index;
 
-				console.log(index);
-
 				self.menu.css({top: btnOffset.top, left: ((btnOffset.left - 225) + 32), display: "block"});
 			},
 
@@ -205,4 +227,126 @@ angular.module("App", ['ngStorage'])
 			}
 		}
 
-	});
+		var audio_context;
+		var recorder;
+
+		function startUserMedia(stream) {
+			var input = audio_context.createMediaStreamSource(stream);
+			console.log('Media stream created.');
+
+		    // Uncomment if you want the audio to feedback directly
+		    //input.connect(audio_context.destination);
+		    //console.log('Input connected to audio context destination.');
+
+		    recorder = new Recorder(input);
+		    console.log('Recorder initialised.');
+		}
+
+		$scope.startRecording = function (button) {
+			recorder && recorder.record();
+			console.log('Recording...');
+		}
+
+		$scope.stopRecording = function (button) {
+			recorder && recorder.stop();
+			console.log('Stopped recording.');
+
+		    // create WAV download link using audio data blob
+		    createDownloadLink();
+
+		    recorder.clear();
+		}
+
+		function createDownloadLink() {
+			recorder && recorder.exportWAV(function(blob) {
+
+
+				var url = URL.createObjectURL(blob);
+				var li = document.createElement('li');
+				var au = document.createElement('audio');
+				var hf = document.createElement('a');
+
+				$scope.post.audios.push(saveAudioOnFileSystem(blob));
+
+				au.controls = true;
+				au.src = url;
+		        //hf.href = url;
+		        //hf.download = new Date().toISOString() + '.wav';
+		        //hf.innerHTML = hf.download;
+		        li.appendChild(au);
+		        //li.appendChild(hf);
+		        $(".easy-post .audio-list ul").append(li);
+		    });
+		}
+
+		function saveAudioOnFileSystem (blob) {
+			var audio = {name: new Date().toISOString() + '.wav'};
+
+			fileSystem && fileSystem.writeBlob(audio.name, blob).then(function (e) {
+				console.log('File saved', audio.name);
+				console.log(e);
+			}, function (e) {
+				console.log(e.text);
+			});
+
+			return audio;
+		}
+
+		$scope.clearFileSystem = function () {
+			fileSystem.getFolderContents('/').then(function (files) {
+				files.forEach(function (file) {
+					fileSystem.deleteFile(file.name);
+				})
+			})
+		}
+
+		fileSystem.getCurrentUsage().then(function (e) {
+			console.log(e);
+			if(e.quota <= 0) {
+				fileSystem.requestQuota(100 * 1024 * 1024).then(function (e) {
+					console.log(e);
+				});
+			}
+		})
+
+		window.fs = fileSystem;
+		window.scope = $scope;
+
+		window.onload = function init() {
+			try {
+		        // webkit shim
+		        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+		        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+		        window.URL = window.URL || window.webkitURL;
+
+		        audio_context = new AudioContext;
+		        console.log('Audio context set up.');
+		        console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+		    } catch (e) {
+		    	alert('No web audio support in this browser!');
+		    }
+
+		    navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+		    	console.log('No live audio input: ' + e);
+		    });
+		};
+
+		fileSystem.getFolderContents('/').then(function (e) {
+			console.info(e)
+		})
+
+		function getAudioFile (file) {
+			console.log("getting file " +  file.name);
+
+			return fileSystem.getFile('/' + file.name).then(function (e) {
+				return  URL.createObjectURL(e);
+			}, function (e) {
+				console.error(e);
+			});
+		}
+
+		$scope.loadAudioFileFromString = function (string) {
+			return $sce.trustAsResourceUrl(string);
+		}
+
+});

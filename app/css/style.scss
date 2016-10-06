@@ -27,6 +27,18 @@ body {
 		border-radius: 3px 3px 0 0;
 	}
 
+	.audio-list {
+		.btn {
+			margin-right: 16px;
+		}
+
+		ul {
+			margin: 0;
+			padding: 16px;
+			list-style: none;
+		}
+	}
+
 	.tag-manager {
 		padding: 8px;
 		background-color: #f2f2f2;
@@ -120,6 +132,15 @@ body {
 				position: absolute;
 				right: 12px;
 				top: 12px;
+			}
+
+			.post-audios {
+				margin: 0;
+				padding: 0;
+
+				li {
+					list-style: none;
+				}
 			}
 		}
 
