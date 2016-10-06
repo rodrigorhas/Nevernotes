@@ -42,11 +42,14 @@
 
 							<ul ng-show="post.audios.length">
 								<li ng-repeat="$audio in post.audios">
+									<p ng-if="debugMode == true">
+										{{safeUrl($audio.url)}}
+									</p>
 									<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
 									<button class="btn btn-default" ng-click="removeAudioFromPostList($index)">
 										<i class="zmdi zmdi-close"></i>
 									</button>
-								</li>								
+								</li>
 							</ul>
 						</div>
 						<div class="padding photo-list" ng-if="photoMode == true">
