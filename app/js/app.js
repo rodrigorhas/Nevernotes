@@ -310,26 +310,26 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 	$scope.Audio = {
 		context: null,
 		recorder: null,
+		recording: false,
 
 		startRecording: function () {
-			$scope.getUserMedia().then(function (stream) {
-				startUserMedia(stream);
+			var self = this;
 
-				$scope.Audio.recorder && $scope.Audio.recorder.record();
-				$scope.log('Recording...');
-			});	
+			self.recorder && self.recorder.record();
+			self.recording = true;
+			$scope.log("Recording...")
 		},
 
 		stopRecording: function () {
-			$scope.getUserMedia().then(function () {
-				$scope.Audio.recorder && $scope.Audio.recorder.stop();
-				$scope.log('Stopped recording.');
+			var self = this;
 
-			    // create WAV download link using audio data blob
-			    createDownloadLink();
+			self.recorder && self.recorder.stop();
+			$scope.log('Stopped recording.');
 
-			    $scope.Audio.recorder && $scope.Audio.recorder.clear();
-			})	
+		    // create WAV download link using audio data blob
+	    	createDownloadLink();
+
+		    self.recorder && self.recorder.clear();
 		}
 	}
 
@@ -407,6 +407,10 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 	    } catch (e) {
 	    	alert('No web audio support in this browser!');
 	    }
+
+	    $scope.getUserMedia().then(function (stream) {
+			startUserMedia(stream);
+		});
 	};
 
 	function getAudioFile (file) {
