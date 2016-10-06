@@ -218,8 +218,15 @@ body {
 }
 
 .searchbar {
+	a {
+		display: inline-block;
+	    margin-right: 22px;
+	    padding: 12px 16px;
+	    position: relative;
+	    top: -2px;
+	}
 	input {
-		width: 100%;
+		width: calc(100% - 68px);
 		border: 0;
 		padding: 12px;
 		margin: 36px 0px 8px 0px;
@@ -231,4 +238,8 @@ body {
 			box-shadow: 0 8px 17px rgba(0, 0, 0, 0.2); 
 		}
 	}
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }

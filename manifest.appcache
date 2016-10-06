@@ -1,4 +1,6 @@
 CACHE MANIFEST
+#v1.1
+index.html
 fonts/Material-Design-Iconic-Font.css
 app/vendors/bootstrap/dist/css/bootstrap.min.css
 app/css/app.min.css
@@ -19,3 +21,6 @@ app/services/store.js
 app/directives/btn-class.js
 app/directives/icon.js
 app/directives/autogrow.js
+
+NETWORK:
+*

@@ -11,22 +11,20 @@
 
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
-<body>
+<body ng-cloak class="ng-cloak">
 
 	<div class="container">
 
-		<div class="log" ng-show="debugMode == true"></div>
+		<div class="log" ng-show="config.debugMode == true"></div>
 
 		<div class="row">
 			<div class="col-lg-6">
 				<div class="col-lg-4 col-sm-12 fixed">
 
-					<button class="btn btn-default" ng-click="debugMode = !debugMode" ng-touchstart="debugMode = !debugMode">
-						<i class="zmdi zmdi-developer-board"></i>
-						Debug
-					</button>
-
 					<div class="searchbar">
+						<a href="#menu" class="btn btn-default" data-toggle="modal">
+							<i class="zmdi zmdi-settings"></i>
+						</a>
 						<input type="text" ng-model="search" placeholder="Pesquise por tags ou notas">
 					</div>
 
@@ -48,7 +46,7 @@
 
 							<ul ng-show="post.audios.length">
 								<li ng-repeat="$audio in post.audios">
-									<p ng-if="debugMode == true">
+									<p ng-if="config.debugMode == true">
 										{{safeUrl($audio.url)}}
 									</p>
 									<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
@@ -86,12 +84,12 @@
 									</button>
 								</li>
 								<li>
-									<button class="btn btn-link" ng-touchstart="audioMode = true" ng-click="audioMode = true">
+									<button class="btn btn-link" ng-touchstart="audioMode = !audioMode" ng-click="audioMode = !audioMode">
 										<i class="zmdi zmdi-mic"></i>
 									</button>
 								</li>
 								<li>
-									<button class="btn btn-link" ng-touchstart="photoMode = true" ng-click="photoMode = true">
+									<button class="btn btn-link" ng-touchstart="photoMode = !photoMode" ng-click="photoMode = !photoMode">
 										<i class="zmdi zmdi-camera"></i>
 									</button>
 								</li>
@@ -161,6 +159,58 @@
 			<button ng-touchstart="NoteMenu.hide();NoteMenu.options.Delete()" ng-click="NoteMenu.hide();NoteMenu.options.Delete()">Deletar</button>
 		</li>
 	</ul>
+
+	<div class="modal fade" id="menu">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Configurações Gerais</h4>
+				</div>
+				<div class="modal-body">
+
+					<h5>Informações</h5>
+					<p>
+						Espaço disponivel: ≃ <strong>{{humanFileSize(config.quota.quota, true)}}</strong>
+						<br>
+						Espaço em uso: ≃ <strong>{{humanFileSize(config.quota.used, true)}}</strong>
+					</p>
+
+					<h5>Cache</h5>
+					<p>
+						Limpar mídia
+						<br>
+						<strong><small>(resultara na perda de todos os audios, videos, fotos e arquivos adicionados a toda e qualquer anotação)</small></strong>
+						<br>
+						<br>
+						<button class="btn btn-danger" ng-click="clearFileSystem()" ng-touchstart="clearFileSystem()">limpar</button>
+					</p>
+					<p>
+						Limpar anotações
+						<br>
+						<strong><small>(resultara na perda de todos anotações e qualquer midia relacionada)</small></strong>
+						<br>
+						<br>
+						<button class="btn btn-danger" ng-click="resetStore()" ng-touchstart="resetStore()">limpar</button>
+					</p>
+
+					<h5>Debug</h5>
+					<p>
+						Alternar modo DEBUG
+						<br>
+						<strong><small>(resultara na disponibilização do Log de Ações e algumas outras opções para desenvolvedor)</small></strong>
+						<br>
+						<br>
+						<button class="btn btn-default" ng-click="config.debugMode = !config.debugMode">{{(config.debugMode) ? "Desativar" : "Ativar"}}</button>
+					</p>
+				</div>
+				<!-- <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div> -->
+			</div>
+		</div>
+	</div>
 
 	<script src="app/vendors/jquery/dist/jquery.min.js"></script>
 	<script src="app/vendors/angular/angular-min.js"></script>
