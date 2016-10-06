@@ -29,17 +29,15 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 
 .controller("Main", function ($scope, $timeout, $localStorage, fileSystem, $sce) {
 
-	$scope.debugMode = true;
+	$scope.debugMode = false;
 
 	$scope.log = function (text) {
 		window.console.log.apply(window.console.log, arguments);
 
-		if($scope.debugMode) {
-			var div = $('<div></div>');
-			div.text(JSON.stringify(text));
+		var div = $('<div></div>');
+		div.text(JSON.stringify(text));
 
-			$('.log').append(div);
-		}
+		$('.log').append(div);
 	}
 
 	$scope.loadStore = function () {

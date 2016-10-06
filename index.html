@@ -20,6 +20,12 @@
 		<div class="row">
 			<div class="col-lg-6">
 				<div class="col-lg-4 col-sm-12 fixed">
+
+					<button class="btn btn-default" ng-click="debugMode = !debugMode">
+						<i class="zmdi zmdi-developer-board"></i>
+						Debug
+					</button>
+
 					<div class="searchbar">
 						<input type="text" ng-model="search" placeholder="Pesquise por tags ou notas">
 					</div>
@@ -122,61 +128,61 @@
 												<span class="zmdi zmdi-download"></span>
 											</button> -->
 										</div>
-										</li>
-									</ul>
-									<div class="note-menu">
-										<button class="btn btn-link" ng-click="NoteMenu.position($event, $post, $index)">
-											<i class="zmdi zmdi-chevron-down"></i>
-										</button>
-									</div>
+									</li>
+								</ul>
+								<div class="note-menu">
+									<button class="btn btn-link" ng-click="NoteMenu.position($event, $post, $index)">
+										<i class="zmdi zmdi-chevron-down"></i>
+									</button>
 								</div>
-								<div class="tags" ng-if="$post.tags.length">
-									<ul>
-										<li ng-repeat="tag in $post.tags">
-											<span class="label label-default" ng-click="addToSearchbar(tag.name)">
-												{{tag.name}}
-											</span>
-										</li>
-									</ul>
-								</div>
+							</div>
+							<div class="tags" ng-if="$post.tags.length">
+								<ul>
+									<li ng-repeat="tag in $post.tags">
+										<span class="label label-default" ng-click="addToSearchbar(tag.name)">
+											{{tag.name}}
+										</span>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<!-- <i class="zmdi zmdi-chevron-down"></i> -->
-		<ul class="note-menu-list">
-			<li>
-				<button ng-click="NoteMenu.hide();NoteMenu.options.Edit()">Editar</button>
-			</li>
-			<li>
-				<button ng-click="NoteMenu.hide();NoteMenu.options.Delete()">Deletar</button>
-			</li>
-		</ul>
+	<!-- <i class="zmdi zmdi-chevron-down"></i> -->
+	<ul class="note-menu-list">
+		<li>
+			<button ng-click="NoteMenu.hide();NoteMenu.options.Edit()">Editar</button>
+		</li>
+		<li>
+			<button ng-click="NoteMenu.hide();NoteMenu.options.Delete()">Deletar</button>
+		</li>
+	</ul>
 
-		<script src="app/vendors/jquery/dist/jquery.min.js"></script>
-		<script src="app/vendors/angular/angular-min.js"></script>
+	<script src="app/vendors/jquery/dist/jquery.min.js"></script>
+	<script src="app/vendors/angular/angular-min.js"></script>
 
-		<script src="bower_components/ngstorage/ngStorage.min.js"></script>
-		<script src="bower_components/moment/min/moment.min.js"></script>
+	<script src="bower_components/ngstorage/ngStorage.min.js"></script>
+	<script src="bower_components/moment/min/moment.min.js"></script>
 
-		<script src="app/vendors/recorderjs/index.js"></script>
-		<script src="app/vendors/angular-fs/fs.js"></script>
+	<script src="app/vendors/recorderjs/index.js"></script>
+	<script src="app/vendors/angular-fs/fs.js"></script>
 
-		<script src="app/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="app/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
 
-		<script src="app/vendors/waves/waves.min.js"></script>
+	<script src="app/vendors/waves/waves.min.js"></script>
 
-		<script src="app/vendors/auto-size/jquery.autosize.min.js"></script>
-		<script src="app/vendors/nicescroll/jquery.nicescroll.min.js"></script>
+	<script src="app/vendors/auto-size/jquery.autosize.min.js"></script>
+	<script src="app/vendors/nicescroll/jquery.nicescroll.min.js"></script>
 
-		<script src="app/js/app.js"></script>
-		<script src="app/services/store.js"></script>
+	<script src="app/js/app.js"></script>
+	<script src="app/services/store.js"></script>
 
-		<script src="app/directives/btn-class.js"></script>
-		<script src="app/directives/icon.js"></script>
-		<script src="app/directives/autogrow.js"></script>
-	</body>
-	</html>
+	<script src="app/directives/btn-class.js"></script>
+	<script src="app/directives/icon.js"></script>
+	<script src="app/directives/autogrow.js"></script>
+</body>
+</html>
