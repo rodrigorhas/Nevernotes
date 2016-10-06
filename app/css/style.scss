@@ -37,6 +37,13 @@ body {
 			margin: 0;
 			padding: 16px;
 			list-style: none;
+
+			li {
+				button {
+					position: relative;
+					top: -13px;
+				}
+			}
 		}
 	}
 
@@ -141,6 +148,12 @@ body {
 
 				li {
 					list-style: none;
+
+					button {
+						position: relative;
+						top: -13px;
+						left: 12px;
+					}
 				}
 			}
 		}

@@ -95,6 +95,8 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 				self.tags = [{name: moment().format("L").replace(/\//g, '-')}];
 				self.id = "";
 				self.audios = [];
+
+				$scope.audioMode = false;
 			},
 
 			save: function () {
@@ -240,6 +242,10 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 			}
 		}
 
+		$scope.removeAudioFromPostList = function (index) {
+			$scope.post.audios.splice(index, 1);
+		}
+
 		var audio_context;
 		var recorder;
 
@@ -276,24 +282,13 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 				var audio = {name: new Date().toISOString() + '.wav'};
 
 				var url = URL.createObjectURL(blob);
-				var li = document.createElement('li');
-				var au = document.createElement('audio');
-				var hf = document.createElement('a');
 
 				audio.blob = blob;
+				audio.url = url;
 
 				$timeout(function () {
 					$scope.post.audios.push(audio);
 				});
-
-				au.controls = true;
-				au.src = url;
-		        //hf.href = url;
-		        //hf.download = new Date().toISOString() + '.wav';
-		        //hf.innerHTML = hf.download;
-		        li.appendChild(au);
-		        //li.appendChild(hf);
-		        $(".easy-post .audio-list ul").append(li);
 		    });
 		}
 
@@ -315,17 +310,10 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 		fileSystem.getCurrentUsage().then(function (e) {
 			console.log(e);
 			if(e.quota <= 0) {
-				fileSystem.requestQuota(100 * 1024 * 1024).then(function (e) {
+				fileSystem.requestQuota(200 * 1024 * 1024).then(function (e) {
 					console.log(e);
 				});
 			}
-		})
-
-		window.fs = fileSystem;
-		window.scope = $scope;
-
-		fileSystem.getFolderContents('/').then(function (e) {
-			console.log(e);
 		})
 
 		window.onload = function init() {
@@ -357,8 +345,19 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 			});
 		}
 
-		$scope.loadAudioFileFromString = function (string) {
+		$scope.safeUrl = function (string) {
 			return $sce.trustAsResourceUrl(string);
+		}
+
+		$scope.downloadAudio = function (audio) {
+			var url = audio.url;
+			var filename = audio.name;
+	        var link = $('<a>');
+	        link
+	        	.attr('href', url)
+	        	.attr('download', (filename || 'output.wav'));
+
+	        link.click();
 		}
 
 });

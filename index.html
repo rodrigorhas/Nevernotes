@@ -28,12 +28,21 @@
 							<label for="enter-option">Aperte enter para criar nota</label>
 						</div>
 						<div class="padding audio-list" ng-show="audioMode == true">
-							<button class="btn btn-primary" ng-mousedown="startRecording()" ng-mouseup="stopRecording()">
-								<i class="zmdi zmdi-mic"></i>
-							</button>
+							<div>
+								<button class="btn btn-primary" ng-mousedown="startRecording()" ng-mouseup="stopRecording()">
+									<i class="zmdi zmdi-mic"></i>
+								</button>
+								Pressione para gravar.
+							</div>
 
-							Pressione para gravar.
-							<ul ng-show="post.audios.length"></ul>
+							<ul ng-show="post.audios.length">
+								<li ng-repeat="$audio in post.audios">
+									<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
+									<button class="btn btn-default" ng-click="removeAudioFromPostList($index)">
+										<i class="zmdi zmdi-close"></i>
+									</button>
+								</li>								
+							</ul>
 						</div>
 						<div class="tag-manager">
 							<div class="input-group tag-input">
@@ -96,12 +105,12 @@
 								<ul class="post-audios" ng-show="$post.audios.length">
 									<li ng-repeat="$audio in $post.audios">
 										<div>
-											<b>{{$audio.name}}</b>
-											<audio ng-src="{{loadAudioFileFromString($audio.url)}}" controls></audio>
-										</div>
-											<!-- <a href="{{$audio.url}}" class="btn btn-primary">
+											<p><b>{{$audio.name}}</b></p>
+											<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
+											<!-- <button class="btn btn-primary" ng-click="downloadAudio($audio)">
 												<span class="zmdi zmdi-download"></span>
-											</a> -->
+											</button> -->
+										</div>
 										</li>
 									</ul>
 									<div class="note-menu">
