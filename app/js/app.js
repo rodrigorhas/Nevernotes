@@ -94,6 +94,7 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 				self.value = "";
 				self.tags = [{name: moment().format("L").replace(/\//g, '-')}];
 				self.id = "";
+				self.audios = [];
 			},
 
 			save: function () {
@@ -118,6 +119,10 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 							return;
 						}
 					}
+
+					self.audios.forEach(function (audio) {
+						saveAudioOnFileSystem(audio, audio.blob);
+					})
 
 					$scope.store.push(post);
 				}
@@ -260,13 +265,16 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 		function createDownloadLink() {
 			recorder && recorder.exportWAV(function(blob) {
 
+				var audio = {name: new Date().toISOString() + '.wav'};
 
 				var url = URL.createObjectURL(blob);
 				var li = document.createElement('li');
 				var au = document.createElement('audio');
 				var hf = document.createElement('a');
 
-				$scope.post.audios.push(saveAudioOnFileSystem(blob));
+				audio.blob = blob;
+
+				$scope.post.audios.push(audio);
 
 				au.controls = true;
 				au.src = url;
@@ -279,17 +287,11 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 		    });
 		}
 
-		function saveAudioOnFileSystem (blob) {
-			var audio = {name: new Date().toISOString() + '.wav'};
+		function saveAudioOnFileSystem (audio, blob) {
 
-			fileSystem && fileSystem.writeBlob(audio.name, blob).then(function (e) {
-				console.log('File saved', audio.name);
-				console.log(e);
-			}, function (e) {
-				console.log(e.text);
+			fileSystem && fileSystem.writeBlob(audio.name, blob).then(function () {}, function (e) {
+				console.erorr(e.text);
 			});
-
-			return audio;
 		}
 
 		$scope.clearFileSystem = function () {
