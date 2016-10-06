@@ -227,6 +227,14 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 				Delete: function () {
 					var self = $scope.NoteMenu;
 
+					self.currentPost.audios.forEach(function (audio) {
+						fileSystem.deleteFile(audio.name).then(function () {
+							console.log('File deleted ' + audio.name);
+						}, function (e) {
+							console.log(e);
+						})
+					});
+
 					$scope.store.splice(self.index, 1);
 				}
 			}
@@ -274,7 +282,9 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 
 				audio.blob = blob;
 
-				$scope.post.audios.push(audio);
+				$timeout(function () {
+					$scope.post.audios.push(audio);
+				});
 
 				au.controls = true;
 				au.src = url;
@@ -314,6 +324,10 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 		window.fs = fileSystem;
 		window.scope = $scope;
 
+		fileSystem.getFolderContents('/').then(function (e) {
+			console.log(e);
+		})
+
 		window.onload = function init() {
 			try {
 		        // webkit shim
@@ -332,10 +346,6 @@ angular.module("App", ['ngStorage', 'fileSystem'])
 		    	console.log('No live audio input: ' + e);
 		    });
 		};
-
-		fileSystem.getFolderContents('/').then(function (e) {
-			console.info(e)
-		})
 
 		function getAudioFile (file) {
 			console.log("getting file " +  file.name);

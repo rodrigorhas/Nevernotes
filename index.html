@@ -24,17 +24,17 @@
 							<textarea ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
 						</div>
 						<div class="padding">
-					      <input type="checkbox" ng-model="post.enterOption" id="enter-option" />
-					      <label for="enter-option">Aperte enter para criar nota</label>
-					    </div>
-					    <div class="padding audio-list" ng-show="audioMode == true">
-					    	<button class="btn btn-primary" ng-mousedown="startRecording()" ng-mouseup="stopRecording()">
-					    		<i class="zmdi zmdi-mic"></i>
-					    	</button>
+							<input type="checkbox" ng-model="post.enterOption" id="enter-option" />
+							<label for="enter-option">Aperte enter para criar nota</label>
+						</div>
+						<div class="padding audio-list" ng-show="audioMode == true">
+							<button class="btn btn-primary" ng-mousedown="startRecording()" ng-mouseup="stopRecording()">
+								<i class="zmdi zmdi-mic"></i>
+							</button>
 
-					    	Pressione para gravar.
-					    	<ul></ul>
-					    </div>
+							Pressione para gravar.
+							<ul ng-show="post.audios.length"></ul>
+						</div>
 						<div class="tag-manager">
 							<div class="input-group tag-input">
 								<span class="input-group-addon"><i class="zmdi zmdi-tag"></i></span>
@@ -93,72 +93,70 @@
 								<p class="text">
 									{{$post.text}}
 								</p>
-								<p ng-show="$post.audios.length">
-									<ul class="post-audios">
-										<li ng-repeat="$audio in $post.audios">
-											<p>
-												<b>{{$audio.name}}</b>
-												<audio ng-src="{{loadAudioFileFromString($audio.url)}}" controls></audio>
-											</p>
+								<ul class="post-audios" ng-show="$post.audios.length">
+									<li ng-repeat="$audio in $post.audios">
+										<div>
+											<b>{{$audio.name}}</b>
+											<audio ng-src="{{loadAudioFileFromString($audio.url)}}" controls></audio>
+										</div>
 											<!-- <a href="{{$audio.url}}" class="btn btn-primary">
 												<span class="zmdi zmdi-download"></span>
 											</a> -->
 										</li>
 									</ul>
-								</p>
-								<div class="note-menu">
-									<button class="btn btn-link" ng-click="NoteMenu.position($event, $post, $index)">
-										<i class="zmdi zmdi-chevron-down"></i>
-									</button>
+									<div class="note-menu">
+										<button class="btn btn-link" ng-click="NoteMenu.position($event, $post, $index)">
+											<i class="zmdi zmdi-chevron-down"></i>
+										</button>
+									</div>
 								</div>
-							</div>
-							<div class="tags" ng-if="$post.tags.length">
-								<ul>
-									<li ng-repeat="tag in $post.tags">
-										<span class="label label-default" ng-click="addToSearchbar(tag.name)">
-											{{tag.name}}
-										</span>
-									</li>
-								</ul>
+								<div class="tags" ng-if="$post.tags.length">
+									<ul>
+										<li ng-repeat="tag in $post.tags">
+											<span class="label label-default" ng-click="addToSearchbar(tag.name)">
+												{{tag.name}}
+											</span>
+										</li>
+									</ul>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-			<!-- <i class="zmdi zmdi-chevron-down"></i> -->
-	<ul class="note-menu-list">
-		<li>
-			<button ng-click="NoteMenu.hide();NoteMenu.options.Edit()">Editar</button>
-		</li>
-		<li>
-			<button ng-click="NoteMenu.hide();NoteMenu.options.Delete()">Deletar</button>
-		</li>
-	</ul>
+		<!-- <i class="zmdi zmdi-chevron-down"></i> -->
+		<ul class="note-menu-list">
+			<li>
+				<button ng-click="NoteMenu.hide();NoteMenu.options.Edit()">Editar</button>
+			</li>
+			<li>
+				<button ng-click="NoteMenu.hide();NoteMenu.options.Delete()">Deletar</button>
+			</li>
+		</ul>
 
-	<script src="app/vendors/jquery/dist/jquery.min.js"></script>
-	<script src="app/vendors/angular/angular-min.js"></script>
+		<script src="app/vendors/jquery/dist/jquery.min.js"></script>
+		<script src="app/vendors/angular/angular-min.js"></script>
 
-	<script src="bower_components/ngstorage/ngStorage.min.js"></script>
-	<script src="bower_components/moment/min/moment.min.js"></script>
+		<script src="bower_components/ngstorage/ngStorage.min.js"></script>
+		<script src="bower_components/moment/min/moment.min.js"></script>
 
-	<script src="app/vendors/recorderjs/index.js"></script>
-	<script src="app/vendors/angular-fs/fs.js"></script>
+		<script src="app/vendors/recorderjs/index.js"></script>
+		<script src="app/vendors/angular-fs/fs.js"></script>
 
-	<script src="app/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="app/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
 
-	<script src="app/vendors/waves/waves.min.js"></script>
+		<script src="app/vendors/waves/waves.min.js"></script>
 
-	<script src="app/vendors/auto-size/jquery.autosize.min.js"></script>
-	<script src="app/vendors/nicescroll/jquery.nicescroll.min.js"></script>
+		<script src="app/vendors/auto-size/jquery.autosize.min.js"></script>
+		<script src="app/vendors/nicescroll/jquery.nicescroll.min.js"></script>
 
-	<script src="app/js/app.js"></script>
-	<script src="app/services/store.js"></script>
+		<script src="app/js/app.js"></script>
+		<script src="app/services/store.js"></script>
 
-	<script src="app/directives/btn-class.js"></script>
-	<script src="app/directives/icon.js"></script>
-	<script src="app/directives/autogrow.js"></script>
-</body>
-</html>
+		<script src="app/directives/btn-class.js"></script>
+		<script src="app/directives/icon.js"></script>
+		<script src="app/directives/autogrow.js"></script>
+	</body>
+	</html>
