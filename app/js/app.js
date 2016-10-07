@@ -1,7 +1,50 @@
 angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 .filter("filterByTags", function () {
-	return function (items, tags) {
+	return function (items, output) {
+		if(output.values && output.values.length > 1) {
+			output.values = output.values.chunk(2);
+			return items.filter(function (item) {
+				var match = false;
+
+				if(output.signs.length) {
+					output.signs.forEach(function (sign, index) {
+						var isEven = (index % 2) == 0;
+						var value1 = (isEven) ? output.values[index][0] : output.values[index][1],
+							value2 = (isEven) ? output.values[index][1] : output.values[index+1][0];
+
+						switch (sign.value){
+							case "&":
+								if(value1 && value2) {
+									console.log(value1, value2);
+
+									var signMatch = false;
+
+									if(value1.exclude) {
+										
+									}
+								}
+								else {
+									console.log('case &:', value1, value2, output.values);
+								}
+							break;
+
+							case "|":
+								console.log('|', sign, groupOfValues);
+							break;
+						}
+
+					});
+				}
+
+				return match;
+			});
+		}
+
+		else return items;
+	}
+
+	/*return function (items, tags) {
 		if(tags.length)
 			return items.filter(function (item, index) {
 
@@ -18,7 +61,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			});
 		else
 			return items;
-	}
+	}*/
 })
 
 .run(function ($localStorage) {
@@ -28,6 +71,22 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 })
 
 .controller("Main", function ($scope, $timeout, $localStorage, fileSystem, $sce) {
+
+	Array.range = function(n) {
+	  // Array.range(5) --> [0,1,2,3,4]
+	  return Array.apply(null,Array(n)).map((x,i) => i)
+	};
+
+	Object.defineProperty(Array.prototype, 'chunk', {
+	  value: function(n) {
+
+	    // ACTUAL CODE FOR CHUNKING ARRAY:
+	    return Array.range(Math.ceil(this.length/n)).map((x,i) => this.slice(i*n,i*n+n));
+
+	  }
+	});
+
+	$.exists = function(item, array) { return !!~$.inArray(item, array); };
 
 	$scope.config = {
 		debugMode: false,
@@ -86,7 +145,50 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	// initialize tooltips
 	$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
 
+	$timeout(function () { $scope.search = "(#urgente && #concluido)"; })
+
 	$scope.getTags = function (str) {
+		var group = str.match(/\((.*?)\)/);
+		var validSigns = ["&", "&&", "|", "||"];
+
+		if(group) {
+			group = group[1];
+
+			if(group.length == 0) return [];
+
+			var splited = group.split(/\s+/g);
+
+			var output = {
+				values: [],
+				signs: []
+			}
+
+			var processed = splited.forEach(function (item) {
+				var type = (item[0] == "#" || (item[0] == "!" && item[1] == "#")) ? "tag" : "signal";
+
+				if(type == "tag") {
+					var tag = {exclude: false};
+
+					if(item[0] == "!") tag.exclude = true;
+					tag.value = (tag.exclude) ? item.substring(2) : item.substring(1);
+					tag.type = type;
+
+					output.values.push(tag);
+				}
+
+				else {
+					if($.exists(item.trim(), validSigns)) {
+						if(item == "&&") item = "&";
+						if(item == "||") item = "|";
+
+						output.signs.push({value: item, type: type});
+					}
+				}
+			});
+
+			return output;
+		}
+
 		return str.match(/\S*#(?:\[[^\]]+\]|\S+)/ig) || [];
 	}
 
@@ -323,8 +425,20 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		recorder: null,
 		recording: false,
 
+		record: function () {
+			var self = this;
+
+			if(!self.recording) {
+				self.startRecording();
+			}
+
+			else {
+				self.stopRecording();
+			}
+		},
+
 		startRecording: function (event) {
-			event.preventDefault();
+			event && event.preventDefault();
 			var self = this;
 
 			self.recorder && self.recorder.record();
