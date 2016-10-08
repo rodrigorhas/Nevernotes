@@ -29,6 +29,19 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			}
 		}
 
+		var exists = function (item, array) {
+			var e = false;
+			for (var i = 0; i < array.length; i++) {
+				var ai = array[i];
+				if (ai.name == item) {
+					e = true;
+					break;
+				}
+			}
+
+			return e;
+		}
+
 		if(isValidSearch() == false) return false;
 
 		// fix additional non-used signs
@@ -37,7 +50,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			if(output.values.length > 1) {
 				output.values = output.values.chunk(2);
 				return items.filter(function (item) {
-					var match = false,
+					var match = true,
 						signMatchResult = [];
 
 					if(output.signs.length) {
@@ -48,9 +61,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 							switch (sign.value) {
 								case "&":
-									if(value1 && value2) {
-										//console.log(value1, value2);
-
 										var signMatch = [false, false];
 
 										if(!value1.exclude) {
@@ -63,43 +73,21 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 											}
 										}
 
-										else {
-											for (var i = 0; i < item.tags.length; i++) {
-												var tag = item.tags[i];
-												if(tag.name.indexOf(value1.value) == -1) {
-													signMatch[0] = false;
-													break;
-												}
-											}
-										}
+										else if(!exists(value1.value, item.tags)) signMatch[0] = true;
 
 										if(!value2.exclude) {
 											for (var i = 0; i < item.tags.length; i++) {
-												var tag = item.tags[i]
+												var tag = item.tags[i];
 												if(tag.name.indexOf(value2.value) > -1) {
-													signMatch[1] = (output.hasExclude) ? false : true;
+													signMatch[1] = true;
 													break;
 												}
 											}
 										}
 
-										else {
-											for (var i = 0; i < item.tags.length; i++) {
-												var tag = item.tags[i]
-												if(tag.name.indexOf(value2.value) == -1) {
-													signMatch[1] = false;
-													break;
-												}
-											}
-										}
-
-										console.log(signMatch, item);
+										else if(!exists(value2.value, item.tags)) signMatch[1] = true;
 
 										signMatchResult.push(signMatch);
-									}
-									else {
-										console.log('case &:', value1, value2, output.values);
-									}
 								break;
 
 								case "|":
