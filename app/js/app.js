@@ -10,8 +10,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 			item.tags.forEach(function (tag, tagIndex) {
 				output.forEach(function (outputItem) {
-					outputItem = (type == "object") ? outputItem.value : outputItem;
-					if(tag.name.indexOf(outputItem) > -1)
+					if(tag.name.indexOf(outputItem.value) > -1)
 						match = true;
 				});
 			});
@@ -38,7 +37,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			if(output.values.length > 1) {
 				output.values = output.values.chunk(2);
 				return items.filter(function (item) {
-					var match = true,
+					var match = false,
 						signMatchResult = [];
 
 					if(output.signs.length) {
@@ -68,7 +67,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 											for (var i = 0; i < item.tags.length; i++) {
 												var tag = item.tags[i];
 												if(tag.name.indexOf(value1.value) == -1) {
-													signMatch[0] = true;
+													signMatch[0] = false;
 													break;
 												}
 											}
@@ -78,7 +77,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 											for (var i = 0; i < item.tags.length; i++) {
 												var tag = item.tags[i]
 												if(tag.name.indexOf(value2.value) > -1) {
-													signMatch[1] = true;
+													signMatch[1] = (output.hasExclude) ? false : true;
 													break;
 												}
 											}
@@ -88,11 +87,13 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 											for (var i = 0; i < item.tags.length; i++) {
 												var tag = item.tags[i]
 												if(tag.name.indexOf(value2.value) == -1) {
-													signMatch[1] = true;
+													signMatch[1] = false;
 													break;
 												}
 											}
 										}
+
+										console.log(signMatch, item);
 
 										signMatchResult.push(signMatch);
 									}
@@ -137,12 +138,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					return simpleSearchByTag(item, output.values, "object");
 				});
 			}
-		}
-
-		else if($.isArray(output)) {
-			return items.filter(function (item, index) {
-				return simpleSearchByTag(item, output, "array");
-			});
 		}
 	}
 })
@@ -228,7 +223,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	// initialize tooltips
 	$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
 
-	$timeout(function () { $scope.search = "#bugs #done"; })
+	$timeout(function () { $scope.search = "(#urgente & #concluido & !#rodrigo)"; })
 
 	$scope.getTags = function (str, notice) {
 		notice = notice || false;
@@ -236,7 +231,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			validSigns = ["&", "|"],
 			output = {
 				values: [],
-				signs: []
+				signs: [],
+				hasExclude: false
 			}
 
 		var isValidSign = function (item) {
@@ -244,13 +240,16 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		}
 
 		var createObject = function (item) {
-			var object = {},
-				type = (item[0] == "#" || (item[0] == "!" && item[1] == "#")) ? "tag" : "sign";
+				var type = (item[0] == "#" || (item[0] == "!" && item[1] == "#")) ? "tag" : "sign";
 
 				if(type == "tag") {
 					var tag = {exclude: false};
 
-					if(item[0] == "!") tag.exclude = true;
+					if(item[0] == "!") {
+						tag.exclude = true;
+						output.hasExclude = true;
+					}
+
 					tag.value = (tag.exclude) ? item.substring(2) : item.substring(1);
 					tag.type = type;
 
@@ -299,11 +298,9 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			if(str) {
 				var tags = str.match(/\S*#(?:\[[^\]]+\]|\S+)/ig);
 				if(tags) {
-					tags.map(function (tag) {
+					return tags.map(function (tag) {
 						return createObject(tag);
 					});
-
-					return tags;
 				}
 			}
 		}
@@ -491,6 +488,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 						$scope.audioMode = true;
 					}
 				});
+
+				$(".easy-post textarea").focus()
 
 				// remove todas as classes note-edit antes de adicionar
 				// no target
