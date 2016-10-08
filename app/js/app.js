@@ -247,6 +247,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 				else if(isValidSign(item)) {
 					return {value: item, type: type};
 				}
+
+				else return {invalid: true}
 		}
 
 		if(group) {
@@ -261,7 +263,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 				var object = createObject(item);
 
-				if(notice && !isValidSign(item)) {
+				if(notice && object.invalid) {
 					return "Termo de pesquisa invalido: " + item;
 				}
 
@@ -278,7 +280,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 				}
 			}
 
-			return output;
+			return (notice) ? "" : output;
 		}
 
 		else {
