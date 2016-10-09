@@ -1,12 +1,11 @@
 CACHE MANIFEST
 #v1.1
 index.html
-fonts/Material-Design-Iconic-Font.css
 app/vendors/bootstrap/dist/css/bootstrap.min.css
 app/css/app.min.css
 app/css/style.css
 app/vendors/jquery/dist/jquery.min.js
-app/vendors/angular/angular-min.js
+bower_components/angular/angular.min.js
 bower_components/ngstorage/ngStorage.min.js
 bower_components/moment/min/moment.min.js
 bower_components/ngtouch/build/ngTouch.min.js
