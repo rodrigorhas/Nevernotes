@@ -19,13 +19,15 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		}
 
 		var isValidSearch = function () {
-			if($.isPlainObject(output) && (output.signs.length >= output.values.length)) {
-				var remainder = output.signs.length - output.values.length + 1;
-				if(remainder) {
-					return false;
-				}
+			if($.isPlainObject(output)) {
+				if(output.signs.length >= output.values.length && output.values.length) {
+					var remainder = output.signs.length - output.values.length + 1;
+					if(remainder) {
+						return false;
+					}
 
-				else true;
+					else true;
+				}
 			}
 		}
 
@@ -49,6 +51,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		if($.isPlainObject(output)) {
 			if(output.values.length > 1) {
 				output.values = output.values.chunk(2);
+
 				return items.filter(function (item) {
 					var match = true,
 						signMatchResult = [];
@@ -96,13 +99,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 							}
 
 						});
-
-						//console.log(signMatchResult);
-
-
-						/*result.forEach(function (item) {
-							if(item == false) match = false; 
-						})*/
 					}
 
 					else {
@@ -121,10 +117,16 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 				});
 			}
 
-			else {
+			else if(output.values.length) {
 				return items.filter(function (item, index) {
 					return simpleSearchByTag(item, output.values, "object");
 				});
+			}
+
+			else if(output.words) {
+				return items.filter(function (item) {
+					return item.text.indexOf(output.words) > -1;
+				})
 			}
 		}
 	}
@@ -220,7 +222,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			output = {
 				values: [],
 				signs: [],
-				hasExclude: false
+				words: false
 			}
 
 		var isValidSign = function (item) {
@@ -235,7 +237,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 					if(item[0] == "!") {
 						tag.exclude = true;
-						output.hasExclude = true;
 					}
 
 					tag.value = (tag.exclude) ? item.substring(2) : item.substring(1);
@@ -248,7 +249,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					return {value: item, type: type};
 				}
 
-				else return {invalid: true}
+				else return {invalid: true, value: item}
 		}
 
 		if(group) {
@@ -288,9 +289,23 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			if(str) {
 				var tags = str.match(/\S*#(?:\[[^\]]+\]|\S+)/ig);
 				if(tags) {
-					return tags.map(function (tag) {
-						return createObject(tag);
+					var invalid = false;
+
+					tags.forEach(function (tag) {
+						var object = createObject(tag);
+						output.values.push(object);
+
+						if(notice && object.invalid) {
+							invalid = "Termo de pesquisa invalido: " + object.value;
+						}
 					});
+
+					return (invalid && notice) ? invalid : output;
+				}
+
+				else {
+					output.words = str;
+					return (!notice) ? output : "";
 				}
 			}
 		}

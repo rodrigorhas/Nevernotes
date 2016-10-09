@@ -17,9 +17,7 @@ app/vendors/auto-size/jquery.autosize.min.js
 app/vendors/nicescroll/jquery.nicescroll.min.js
 app/js/app.js
 app/services/store.js
-app/directives/btn-class.js
-app/directives/icon.js
-app/directives/autogrow.js
+app/directives/*
 
 NETWORK:
 *

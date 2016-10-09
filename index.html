@@ -23,7 +23,7 @@
 
 					<div class="searchbar">
 						<a href="#menu" class="btn btn-default" data-toggle="modal">
-							<i class="zmdi zmdi-settings"></i>
+							<icon name="settings"></icon>
 						</a>
 						<input type="text" ng-model="search" placeholder="Pesquise por tags ou notas">
 						<span>{{getTags(search, true)}}</span>
@@ -31,18 +31,18 @@
 
 					<div class="easy-post">
 						<div class="content-wrapper">
-							<textarea ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
+							<textarea auto-grow ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
 						</div>
 						<div class="padding">
 							<input type="checkbox" ng-model="post.enterOption" id="enter-option" />
-							<label for="enter-option">Aperte enter para criar nota</label>
+							<label for="enter-option">Aperte enter para criar uma anotação</label>
 						</div>
 						<div class="padding audio-list" ng-if="audioMode == true">
 							<div>
 								<button class="btn btn-primary" ng-mousedown="Audio.record($event)"  ng-touchstart="Audio.record($event)">
-									<i class="zmdi zmdi-mic"></i>
+									<icon name="mic"></icon>
 								</button>
-								{{(Audio.recording) ? "Gravando - Pressione para parar" : "Pressione para gravar."}}
+								{{(Audio.recording) ? "Gravando - Pressione para parar." : "Pressione para gravar."}}
 							</div>
 
 							<ul ng-show="post.audios.length">
@@ -52,17 +52,18 @@
 									</p>
 									<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
 									<button class="btn btn-default" ng-touchstart="removeAudioFromPostList($index)" ng-click="removeAudioFromPostList($index)">
-										<i class="zmdi zmdi-close"></i>
+										<icon name="close"></icon>
 									</button>
 								</li>
 							</ul>
 						</div>
-						<div class="padding photo-list" ng-if="photoMode == true">
-							<input type="file" id="take-picture" accept="image/*">
+						<div class="padding photo-list" ng-if="photoMode == 2">
+							Ainda não implementado
+							<!-- <input type="file" id="take-picture" accept="image/*"> -->
 						</div>
 						<div class="tag-manager">
 							<div class="input-group tag-input">
-								<span class="input-group-addon"><i class="zmdi zmdi-tag"></i></span>
+								<span class="input-group-addon"><icon name="tag"></icon></span>
 								<input type="text" ng-model="post.tagInput" ng-keydown="post.onTagInputKeydown($event)" placeholder="Enter para adicionar a tag">
 							</div>
 
@@ -81,22 +82,22 @@
 							<ul>
 								<li>
 									<button class="btn btn-link">
-										<i class="zmdi zmdi-attachment-alt"></i>
+										<icon name="attachment-alt"></icon>
 									</button>
 								</li>
 								<li>
 									<button class="btn btn-link" ng-touchstart="audioMode = !audioMode" ng-click="audioMode = !audioMode">
-										<i class="zmdi zmdi-mic"></i>
+										<icon name="mic"></icon>
 									</button>
 								</li>
 								<li>
 									<button class="btn btn-link" ng-touchstart="photoMode = !photoMode" ng-click="photoMode = !photoMode">
-										<i class="zmdi zmdi-camera"></i>
+										<icon name="camera"></icon>
 									</button>
 								</li>
 								<li>
 									<button class="btn btn-link">
-										<i class="zmdi zmdi-videocam"></i>
+										<icon name="videocam"></icon>
 									</button>
 								</li>
 
@@ -131,7 +132,7 @@
 								</ul>
 								<div class="note-menu">
 									<button class="btn btn-link" ng-touchstart="NoteMenu.position($event, $post, $index)" ng-click="NoteMenu.position($event, $post, $index)">
-										<i class="zmdi zmdi-chevron-down"></i>
+										<icon name="chevron-down"></icon>
 									</button>
 								</div>
 							</div>
@@ -151,7 +152,6 @@
 		</div>
 	</div>
 
-	<!-- <i class="zmdi zmdi-chevron-down"></i> -->
 	<ul class="note-menu-list">
 		<li>
 			<button ng-touchstart="NoteMenu.hide();NoteMenu.options.Edit()" ng-click="NoteMenu.hide();NoteMenu.options.Edit()">Editar</button>
