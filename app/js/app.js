@@ -6,16 +6,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		if(!output) return items;
 
 		var simpleSearchByTag = function (item, output, type) {
-			var match = false;
-
-			item.tags.forEach(function (tag, tagIndex) {
-				output.forEach(function (outputItem) {
-					if(tag.name.indexOf(outputItem.value) > -1)
-						match = true;
-				});
-			});
-
-			return match;
+			
 		}
 
 		var isValidSearch = function () {
@@ -67,25 +58,13 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 										var signMatch = [false, false];
 
 										if(!value1.exclude) {
-											for (var i = 0; i < item.tags.length; i++) {
-												var tag = item.tags[i];
-												if(tag.name.indexOf(value1.value) > -1) {
-													signMatch[0] = true;
-													break;
-												}
-											}
+											if(exists(value1.value, item.tags)) signMatch[0] = true;
 										}
 
 										else if(!exists(value1.value, item.tags)) signMatch[0] = true;
 
 										if(!value2.exclude) {
-											for (var i = 0; i < item.tags.length; i++) {
-												var tag = item.tags[i];
-												if(tag.name.indexOf(value2.value) > -1) {
-													signMatch[1] = true;
-													break;
-												}
-											}
+											if(exists(value2.value, item.tags)) signMatch[1] = true;
 										}
 
 										else if(!exists(value2.value, item.tags)) signMatch[1] = true;
@@ -94,7 +73,15 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 								break;
 
 								case "|":
-									console.log('|', sign, groupOfValues);
+									var signMatch = [false];
+									
+									if(!value1.exclude)
+										if(exists(value1.value, item.tags)) signMatch[0] = true;
+
+									if(!value2.exclude)
+										if(exists(value2.value, item.tags)) signMatch[0] = true;
+
+									signMatchResult.push(signMatch);
 								break;
 							}
 
@@ -118,8 +105,19 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			}
 
 			else if(output.values.length) {
+				//analize
+
 				return items.filter(function (item, index) {
-					return simpleSearchByTag(item, output.values, "object");
+					var match = false;
+
+					item.tags.forEach(function (tag, tagIndex) {
+						output.values.forEach(function (outputItem) {
+							if(tag.name.indexOf(outputItem.value) > -1)
+								match = true;
+						});
+					});
+
+					return match;
 				});
 			}
 

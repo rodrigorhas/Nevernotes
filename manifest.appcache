@@ -17,7 +17,13 @@ app/vendors/auto-size/jquery.autosize.min.js
 app/vendors/nicescroll/jquery.nicescroll.min.js
 app/js/app.js
 app/services/store.js
-app/directives/*
+app/directives/btn-class.js
+app/directives/icon.js
+app/directives/autogrow.js
+fonts/zmdi/css/material-design-iconic-font.min.css
+fonts/zmdi/fonts/Material-Design-Iconic-Font.woff2
+fonts/roboto/Roboto-Regular-webfont.woff
+fonts/roboto/Roboto-Bold-webfont.woff
 
 NETWORK:
 *
