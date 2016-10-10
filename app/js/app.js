@@ -209,7 +209,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	// initialize tooltips
 	$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
 
-	$timeout(function () { $scope.search = "(#urgente & #concluido & !#rodrigo)"; })
+	$timeout(function () { $scope.search = "#urgente #concluido !#rodrigo"; })
 
 	$scope.getTags = function (str, notice) {
 		notice = notice || false;
@@ -236,6 +236,12 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					}
 
 					tag.value = (tag.exclude) ? item.substring(2) : item.substring(1);
+
+					// for cases like #rodrigo) return an invalid tag
+					if(/\W+/.test(tag.value)) {
+						return {invalid: true, value: item};
+					}
+
 					tag.type = type;
 
 					return tag;
@@ -245,14 +251,13 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					return {value: item, type: type};
 				}
 
-				else return {invalid: true, value: item}
+				else return {invalid: true, value: item};
 		}
 
 		if(group) {
 			group = group[1];
 
 			if(group.length == 0) return [];
-
 			var splited = group.split(/\s+/g);
 
 			for (var i = 0; i < splited.length; i++) {
@@ -260,7 +265,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 				var object = createObject(item);
 
-				if(notice && object.invalid) {
+				if(notice && object.invalid && object.value) {
 					return "Termo de pesquisa invalido: " + item;
 				}
 
@@ -307,12 +312,9 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		}
 	}
 
-	$scope.search = "";
-
 	$scope.post = {
 		id: "",
 		value: "",
-		addingPost: false,
 		enterOption: true,
 		tags: [{name: moment().format("L").replace(/\//g, '-')}],
 		audios: [],
@@ -425,8 +427,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		tags = $scope.getTags(terms).values;
 
 		tags.forEach(function (tag) {
-			if(tag.value == str.substring(1)) valid = false;
-		})
+			if(tag.value == str.substring(1)) return valid = false;
+		});
 
 
 		if(valid) $scope.search += ($scope.search.length ? " " : "") + str;
@@ -434,9 +436,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 	$scope.extractText = function (str) {
 		return str
-		.replace(/\S*#(?:\[[^\]]+\]|\S+)/g, function () {
-			return "";
-		})
+		.replace(/\S*#(?:\[[^\]]+\]|\S+)/g, '')
 		.replace('#', '')
 		.trim();
 	}
