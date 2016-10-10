@@ -5,10 +5,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 		if(!output) return items;
 
-		var simpleSearchByTag = function (item, output, type) {
-			
-		}
-
 		var isValidSearch = function () {
 			if($.isPlainObject(output)) {
 				if(output.signs.length >= output.values.length && output.values.length) {
@@ -98,7 +94,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 						result.forEach(function (result2) {
 							if(result2 == false) return match = false;
 						});
-					})
+					});
 
 					return match;
 				});
@@ -106,6 +102,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 			else if(output.values.length) {
 				//analize
+
+				console.log('write');
 
 				return items.filter(function (item, index) {
 					var match = false;
@@ -375,9 +373,11 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					var item = $scope.store[i];
 					if(item.id == self.id) {
 						$scope.store[i] = post;
+
 						if(post.audios.length) {
 							$scope.setAudiosUrl();
 						}
+
 						self.reset();
 						return;
 					}
@@ -422,14 +422,14 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 		var terms = $scope.search,
 		valid = true,
-		tags = $scope.getTags(terms);
+		tags = $scope.getTags(terms).values;
 
-		for (var i = 0; i < tags.length; i++) {
-			var tag = tags[i];
-			if(tag == str) valid = false;
-		};
+		tags.forEach(function (tag) {
+			if(tag.value == str.substring(1)) valid = false;
+		})
 
-		if(valid) $scope.search = $scope.search + ($scope.search.length ? " " : "") + str;
+
+		if(valid) $scope.search += ($scope.search.length ? " " : "") + str;
 	}
 
 	$scope.extractText = function (str) {
