@@ -15,7 +15,7 @@
 
 	<div class="container">
 
-		<div class="log" ng-show="config.debugMode == true"></div>
+		<div class="log" style="overflow-y: auto;height:150px" ng-show="Config.debugMode == true"></div>
 
 		<div class="row">
 			<div class="col-lg-6">
@@ -47,7 +47,7 @@
 
 							<ul ng-show="post.audios.length">
 								<li ng-repeat="$audio in post.audios">
-									<p ng-if="config.debugMode == true">
+									<p ng-if="Config.debugMode == true">
 										{{safeUrl($audio.url)}}
 									</p>
 									<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
@@ -172,9 +172,9 @@
 
 					<h5>Informações</h5>
 					<p>
-						Espaço disponivel: ≃ <strong>{{humanFileSize(config.quota.quota, true)}}</strong>
+						Espaço disponivel: ≃ <strong>{{humanFileSize(Config.quota.quota, true)}}</strong>
 						<br>
-						Espaço em uso: ≃ <strong>{{humanFileSize(config.quota.used, true)}}</strong>
+						Espaço em uso: ≃ <strong>{{humanFileSize(Config.quota.used, true)}}</strong>
 					</p>
 
 					<h5>Cache</h5>
@@ -202,7 +202,7 @@
 						<strong><small>(resultara na disponibilização do Log de Ações e algumas outras opções para desenvolvedor)</small></strong>
 						<br>
 						<br>
-						<button class="btn btn-default" ng-click="config.debugMode = !config.debugMode">{{(config.debugMode) ? "Desativar" : "Ativar"}}</button>
+						<button class="btn btn-default" ng-click="Config.debugMode = !Config.debugMode">{{(Config.debugMode) ? "Desativar" : "Ativar"}}</button>
 					</p>
 				</div>
 				<!-- <div class="modal-footer">
