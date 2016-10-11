@@ -31,22 +31,34 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			return e;
 		}
 
+		var simpleSearch = function (array, item) {
+			var res = false;
+			for (var i = 0; i < array.values.length; i++) {
+				if(exists(array.values[i].value, item.tags)) {
+					res =  true;
+					break;
+				}
+			}
+
+			return res;
+		}
+
 		if(isValidSearch() == false) return false;
 
 		// fix additional non-used signs
 
 		if($.isPlainObject(output)) {
-			if(output.values.length > 1) {
-				var values = output.values.chunk(2);
+			return items.filter(function (item) {
+				var match = true;
 
-				return items.filter(function (item) {
-					var match = true,
+				if(output.values.length > 1) {
+					var values = output.values.chunk(2),
 					signMatchResult = [];
 
 					if(output.signs.length) {
 						output.signs.forEach(function (sign, index) {
-							var isEven = (index % 2) == 0;
-							var value1 = (isEven) ? values[index][0] : values[index-1][1],
+							var isEven = (index % 2) == 0,
+							value1 = (isEven) ? values[index][0] : values[index-1][1],
 							value2 = (isEven) ? values[index][1] : values[index][0];
 
 							switch (sign.value) {
@@ -84,45 +96,26 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 						});
 					}
 
-					else {
-
-						for (var i = 0; i < output.values.length; i++) {
-							
-							if(exists(output.values[i].value, item.tags)) {
-								match =  true;
-								break;	
-							}
-
-							return match;
-						}
-
-							/*for (var i = 0; i < item.tags.length; i++) {
-								var tag = item.tags[i];
-								for (var i = 0; i < output.values.length; i++) {
-									var outputItem = output.values[i];
-
-									if(tag.name = outputItem.value)
-										return true;
-								}
-							}*/
-					}
+					else 
+						match = simpleSearch(output, item);
 
 					signMatchResult.forEach(function (result) {
-						//console.log(result);
 						result.forEach(function (result2) {
 							if(result2 == false) return match = false;
 						});
 					});
 
 					return match;
-				});
-			}
+				}
 
-			else if(output.words) {
-				return items.filter(function (item) {
-					return item.text.indexOf(output.words) > -1;
-				})
-			}
+				else if(output.values.length == 1) 
+					match = simpleSearch(output, item);
+
+				else if(output.words) 
+					return (item.text.indexOf(output.words) > -1) ? true : false;
+
+				return match
+			});
 		}
 	}
 })
@@ -131,9 +124,32 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	if(!$localStorage["nevernotes-store"]) {
 		$localStorage["nevernotes-store"] = [];
 	}
+
+	if(!$localStorage['nevernotes-config']) {
+		$localStorage['nevernotes-config'] = {};
+	}
+
+	if(!$localStorage['nevernotes-tags']) {
+		$localStorage['nevernotes-tags'] = [];
+	}
 })
 
 .controller("Main", function ($scope, $timeout, $localStorage, fileSystem, $sce) {
+
+	// set $scope vars
+	$scope.configBlock = function ($scope) {
+		$scope.log("Store loaded");
+		$scope.Store = $localStorage["nevernotes-store"];
+		
+		$scope.log("Config loaded");
+		$scope.Config = $localStorage['nevernotes-config'];
+
+		$scope.log("Tags loaded");
+		$scope.Tags = $localStorage['nevernotes-tags'];
+
+		$scope.log("Getting audio files from fileSystem");
+		$scope.setAudiosUrl();
+	}
 
 	Array.range = function(n) {
 	  // Array.range(5) --> [0,1,2,3,4]
@@ -143,11 +159,64 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	Object.defineProperty(Array.prototype, 'chunk', {
 		value: function(n) {
 
-	    // ACTUAL CODE FOR CHUNKING ARRAY:
-	    return Array.range(Math.ceil(this.length/n)).map((x,i) => this.slice(i*n,i*n+n));
+	    	// ACTUAL CODE FOR CHUNKING ARRAY:
+	    	return Array.range(Math.ceil(this.length/n)).map((x,i) => this.slice(i*n,i*n+n));
 
-	}
-});
+	    }
+	});
+
+	(function ( $ ) {
+
+		$.fn.tagComplete = function (options) {
+
+			var defaults = {
+				delay: 300
+			}
+
+			options = $.extend(options, defaults);
+
+			return this.each(function () {
+				var self = $(this),
+				tagPattern = /(^|\s)#(\w*(?:\s*\w*))$/g;
+
+				var delay = (function(){
+					var timer = 0;
+					return function(callback, ms){
+						clearTimeout (timer);
+						timer = setTimeout(callback, ms);
+					};
+				})();
+
+				var processMatch = function (match) {
+					console.log("Processing", match);
+				}
+
+				var searchByMatches = function (value) {
+					var matches = value.match(tagPattern);
+
+					if(matches) {
+						match = matches[0];
+
+						if(match.length > 1) {
+							// remove # from the string
+							processMatch(match.substring(1));
+						}
+					}
+				}
+
+				self.on('keyup', function (e) {
+					delay(function () {
+						searchByMatches(self.val());
+					}, options.delay);
+				})
+			});
+		}
+
+	})(jQuery);
+
+	$("textarea").tagComplete({
+		delay: 1000
+	});
 
 	$.exists = function(item, array) { return !!~$.inArray(item, array); };
 
@@ -167,17 +236,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		$('.log').append(div);
 	}
 
-	$scope.loadStore = function () {
-		$scope.log("Store loaded");
-		$scope.store = $localStorage["nevernotes-store"];
-
-		$scope.log("Getting audio files from fileSystem")
-		$scope.setAudiosUrl();
-	}
-
-
 	$scope.setAudiosUrl = function () {
-		$scope.store.forEach(function (item) {
+		$scope.Store.forEach(function (item) {
 			if(item.audios) {
 				item.audios.forEach(function (audio) {
 					var audioFile = getAudioFile(audio);
@@ -207,8 +267,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 	// initialize tooltips
 	$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
-
-	$timeout(function () { $scope.search = "#urgente #concluido #rodrigo"; })
 
 	$scope.getTags = function (str, notice) {
 		if(!str) return;
@@ -257,7 +315,11 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			if(group) {
 				group = group[1];
 
-				if(group.length == 0) return [];
+				if(group.length == 0) {
+					output.words = "()";
+					return output;
+				}
+
 				var splited = group.split(/\s+/g);
 
 				for (var i = 0; i < splited.length; i++) {
@@ -363,7 +425,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			var self = this,
 			post;
 
-			if($scope.store) {
+			if($scope.Store) {
 
 				post = {
 					id: self.id || randomHash(),
@@ -372,10 +434,10 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					audios: ($scope.audioMode) ? self.audios : []
 				};
 
-				for (var i = 0; i < $scope.store.length; i++) {
-					var item = $scope.store[i];
+				for (var i = 0; i < $scope.Store.length; i++) {
+					var item = $scope.Store[i];
 					if(item.id == self.id) {
-						$scope.store[i] = post;
+						$scope.Store[i] = post;
 
 						if(post.audios.length) {
 							$scope.setAudiosUrl();
@@ -396,7 +458,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					$scope.setAudiosUrl();
 				}
 
-				$scope.store.push(post);
+				$scope.Store.push(post);
 				$scope.log("Note saved");
 			}
 
@@ -514,7 +576,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					})
 				});
 
-				$scope.store.splice(self.index, 1);
+				$scope.Store.splice(self.index, 1);
 
 				$scope.log('Note deleted');
 			}
@@ -740,6 +802,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		}
 	}
 
-	$scope.loadStore();
+	$scope.configBlock($scope);
 
 });
