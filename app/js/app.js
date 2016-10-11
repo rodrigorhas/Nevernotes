@@ -37,47 +37,47 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 		if($.isPlainObject(output)) {
 			if(output.values.length > 1) {
-				output.values = output.values.chunk(2);
+				var values = output.values.chunk(2);
 
 				return items.filter(function (item) {
 					var match = true,
-						signMatchResult = [];
+					signMatchResult = [];
 
 					if(output.signs.length) {
 						output.signs.forEach(function (sign, index) {
 							var isEven = (index % 2) == 0;
-							var value1 = (isEven) ? output.values[index][0] : output.values[index-1][1],
-								value2 = (isEven) ? output.values[index][1] : output.values[index][0];
+							var value1 = (isEven) ? values[index][0] : values[index-1][1],
+							value2 = (isEven) ? values[index][1] : values[index][0];
 
 							switch (sign.value) {
 								case "&":
-										var signMatch = [false, false];
+								var signMatch = [false, false];
 
-										if(!value1.exclude) {
-											if(exists(value1.value, item.tags)) signMatch[0] = true;
-										}
+								if(!value1.exclude) {
+									if(exists(value1.value, item.tags)) signMatch[0] = true;
+								}
 
-										else if(!exists(value1.value, item.tags)) signMatch[0] = true;
+								else if(!exists(value1.value, item.tags)) signMatch[0] = true;
 
-										if(!value2.exclude) {
-											if(exists(value2.value, item.tags)) signMatch[1] = true;
-										}
+								if(!value2.exclude) {
+									if(exists(value2.value, item.tags)) signMatch[1] = true;
+								}
 
-										else if(!exists(value2.value, item.tags)) signMatch[1] = true;
+								else if(!exists(value2.value, item.tags)) signMatch[1] = true;
 
-										signMatchResult.push(signMatch);
+								signMatchResult.push(signMatch);
 								break;
 
 								case "|":
-									var signMatch = [false];
-									
-									if(!value1.exclude)
-										if(exists(value1.value, item.tags)) signMatch[0] = true;
+								var signMatch = [false];
 
-									if(!value2.exclude)
-										if(exists(value2.value, item.tags)) signMatch[0] = true;
+								if(!value1.exclude)
+									if(exists(value1.value, item.tags)) signMatch[0] = true;
 
-									signMatchResult.push(signMatch);
+								if(!value2.exclude)
+									if(exists(value2.value, item.tags)) signMatch[0] = true;
+
+								signMatchResult.push(signMatch);
 								break;
 							}
 
@@ -85,33 +85,32 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					}
 
 					else {
-						// force an invalid the filter result
-						match = false;
+
+						for (var i = 0; i < output.values.length; i++) {
+							
+							if(exists(output.values[i].value, item.tags)) {
+								match =  true;
+								break;	
+							}
+
+							return match;
+						}
+
+							/*for (var i = 0; i < item.tags.length; i++) {
+								var tag = item.tags[i];
+								for (var i = 0; i < output.values.length; i++) {
+									var outputItem = output.values[i];
+
+									if(tag.name = outputItem.value)
+										return true;
+								}
+							}*/
 					}
 
 					signMatchResult.forEach(function (result) {
 						//console.log(result);
 						result.forEach(function (result2) {
 							if(result2 == false) return match = false;
-						});
-					});
-
-					return match;
-				});
-			}
-
-			else if(output.values.length) {
-				//analize
-
-				console.log('write');
-
-				return items.filter(function (item, index) {
-					var match = false;
-
-					item.tags.forEach(function (tag, tagIndex) {
-						output.values.forEach(function (outputItem) {
-							if(tag.name.indexOf(outputItem.value) > -1)
-								match = true;
 						});
 					});
 
@@ -142,13 +141,13 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	};
 
 	Object.defineProperty(Array.prototype, 'chunk', {
-	  value: function(n) {
+		value: function(n) {
 
 	    // ACTUAL CODE FOR CHUNKING ARRAY:
 	    return Array.range(Math.ceil(this.length/n)).map((x,i) => this.slice(i*n,i*n+n));
 
-	  }
-	});
+	}
+});
 
 	$.exists = function(item, array) { return !!~$.inArray(item, array); };
 
@@ -209,33 +208,34 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	// initialize tooltips
 	$timeout(function () { $('[data-toggle="tooltip"]').tooltip(); })
 
-	$timeout(function () { $scope.search = "#urgente #concluido !#rodrigo"; })
+	$timeout(function () { $scope.search = "#urgente #concluido #rodrigo"; })
 
 	$scope.getTags = function (str, notice) {
+		if(!str) return;
 		notice = notice || false;
 		var group = str.match(/\((.*?)\)/);
-			validSigns = ["&", "|"],
-			output = {
-				values: [],
-				signs: [],
-				words: false
-			}
+		validSigns = ["&", "|"],
+		output = {
+			values: [],
+			signs: [],
+			words: false
+		}
 
 		var isValidSign = function (item) {
 			return $.exists(item, validSigns);
 		}
 
 		var createObject = function (item) {
-				var type = (item[0] == "#" || (item[0] == "!" && item[1] == "#")) ? "tag" : "sign";
+			var type = (item[0] == "#" || (item[0] == "!" && item[1] == "#")) ? "tag" : "sign";
 
-				if(type == "tag") {
-					var tag = {exclude: false};
+			if(type == "tag") {
+				var tag = {exclude: false};
 
-					if(item[0] == "!") {
-						tag.exclude = true;
-					}
+				if(item[0] == "!") {
+					tag.exclude = true;
+				}
 
-					tag.value = (tag.exclude) ? item.substring(2) : item.substring(1);
+				tag.value = (tag.exclude) ? item.substring(2) : item.substring(1);
 
 					// for cases like #rodrigo) return an invalid tag
 					if(/\W+/.test(tag.value)) {
@@ -252,56 +252,57 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 				}
 
 				else return {invalid: true, value: item};
-		}
-
-		if(group) {
-			group = group[1];
-
-			if(group.length == 0) return [];
-			var splited = group.split(/\s+/g);
-
-			for (var i = 0; i < splited.length; i++) {
-				var item = splited[i];
-
-				var object = createObject(item);
-
-				if(notice && object.invalid && object.value) {
-					return "Termo de pesquisa invalido: " + item;
-				}
-
-				if(object) {
-					if(object.type == "tag") {
-						delete object.type;
-						output.values.push(object);
-					}
-
-					else if(object.type == "sign") {
-						delete object.type;
-						output.signs.push(object);
-					}
-				}
 			}
 
-			return (notice) ? "" : output;
-		}
+			if(group) {
+				group = group[1];
 
-		else {
+				if(group.length == 0) return [];
+				var splited = group.split(/\s+/g);
+
+				for (var i = 0; i < splited.length; i++) {
+					var item = splited[i];
+
+					var object = createObject(item);
+
+					if(notice && object.invalid && object.value) {
+						return "Termo de pesquisa invalido: " + item;
+					}
+
+					if(object) {
+						if(object.type == "tag") {
+							delete object.type;
+							output.values.push(object);
+						}
+
+						else if(object.type == "sign") {
+							delete object.type;
+							output.signs.push(object);
+						}
+					}
+				}
+
+				return (notice) ? "" : output;
+			}
+
+			else {
 			// normal search
 			if(str) {
 				var tags = str.match(/\S*#(?:\[[^\]]+\]|\S+)/ig);
 				if(tags) {
 					var invalid = false;
 
-					tags.forEach(function (tag) {
+					for (var i = 0; i < tags.length; i++) {
+						var tag = tags[i]
 						var object = createObject(tag);
 						output.values.push(object);
 
 						if(notice && object.invalid) {
-							invalid = "Termo de pesquisa invalido: " + object.value;
+							return "Termo de pesquisa invalido: " + object.value;
 						}
-					});
+					}
 
-					return (invalid && notice) ? invalid : output;
+					return (notice) ? "" : output;
 				}
 
 				else {
