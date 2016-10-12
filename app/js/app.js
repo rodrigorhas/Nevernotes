@@ -190,17 +190,14 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 		remove: function (name) {
 			var self = this;
-			var datasetItem = null;
 
-			for (var i = self.datset.length - 1; i >= 0; i--) {
-				var item = self.datset[i];
+			for (var i = 0; i < self.dataset.length; i++) {
+				var item = self.dataset[i];
 				if(item.name == name) {
-					datasetItem = item;
+					--item.quantity;
 					break;
 				}
 			}
-
-			if(datasetItem) --datasetItem.quantity;
 		},
 
 		get: function (tag) {
@@ -581,6 +578,10 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 						$log(e);
 					})
 				});
+
+				self.currentPost.tags.forEach(function (tag) {
+					$scope.Tags.remove(tag.name);
+				})
 
 				$scope.Store.splice(self.index, 1);
 
