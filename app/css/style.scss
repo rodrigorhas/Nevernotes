@@ -260,14 +260,21 @@ body {
 
 	li {
 		display: block;
+		cursor: pointer;
+
+		&:hover {
+			background-color: #f2f2f2;
+		}
 
 		a {
-			display: block;
+			display: inline-block;
 			padding: 8px 12px;
 		}
 	}
 
 	span {
 		padding: 8px 12px;
+		margin-right: 12px;
+		margin-top: 4px;
 	}
 }

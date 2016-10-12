@@ -188,9 +188,19 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			}
 		},
 
-		remove: function (index) {
+		remove: function (name) {
 			var self = this;
-			return self.dataset.splice(index, 1)
+			var datasetItem = null;
+
+			for (var i = self.datset.length - 1; i >= 0; i--) {
+				var item = self.datset[i];
+				if(item.name == name) {
+					datasetItem = item;
+					break;
+				}
+			}
+
+			if(datasetItem) --datasetItem.quantity;
 		},
 
 		get: function (tag) {
@@ -473,6 +483,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 	$scope.removeTag = function (index) {
 
+		$scope.Tags.remove($scope.post.tags[index].name);
 		$scope.post.tags.splice(index, 1);
 	}
 
@@ -789,6 +800,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 				$timeout(function () {
 					$localStorage['nevernotes-store'] = [];
+					$localStorage['nevernotes-tags'] = null;
 					$log("LocalStorage has been reseted");
 					alert("Reset concluido, a pagina sera recarregada !");
 					window.location.reload();

@@ -7,14 +7,10 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			var list = $("#tagAutocomplete-list");
 
 			if(!list.length) {
-				list = $('<ul ng-show="checkVisibility()"><li ng-repeat="$key in list"><a href="#" ng-click="selectItem($key)">{{$key.name}}</a></li></ul>')
+				list = $('<ul ng-show="checkVisibility()"><li ng-repeat="$key in list" ng-click="selectItem($key)"><a href="#">{{$key.name}}</a><span class="label label-default pull-right">{{$key.quantity}}</span></li></ul>')
 				.attr('id', "tagAutocomplete-list")
 				.css({position: 'absolute'})
 				.prepend($('<span ng-if="warn.length"><b><small>{{warn}}</small></b></span>')),
-
-				offset = element.offset();
-
-				console.log(offset, element.parent());
 
 				list = $compile(list)(scope);
 
@@ -77,7 +73,7 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			var processMatch = function (match) {
 
 				var matches = $scope.tags.dataset.filter(function (tag) {
-					if(tag.name.indexOf(match) == 0) {
+					if(tag.name.indexOf(match) == 0 && tag.quantity) {
 						return true;
 					}
 				});
@@ -110,16 +106,18 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 			    var currentWord = returnWord(value, getCaretPosition($element[0]).end);
 
-			    var firstMatch = value.match(new RegExp('\\s?' + currentWord + '\\s', 'g'));
+			    var firstMatch = value.match(new RegExp('\\s?' + currentWord + '\\s?', 'g'));
 
 			    if(firstMatch && firstMatch.length) {
 			    	firstMatch = firstMatch[0].trim();
 			    	if(firstMatch.length > 1) {
 			    		return processMatch(firstMatch.substring(1));
 			    	}
+
+			    	else clearList();
 			    }
 
-			    var matches = value.match(tagPattern);
+			    /*var matches = value.match(tagPattern);
 
 			    console.log(matches);
 
@@ -132,10 +130,10 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 					}
 
 					else {
-						console.log(match);
+						resetWarn();
 						clearList();
 					} 
-				}
+				}*/
 			}
 
 			function getCaretPosition(ctrl) {
@@ -198,16 +196,54 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 				var result = /\S+$/.exec(value.slice(0, caret.end));
 				var lastWord = result ? result[0] : null;
 
-				insertAtCaret($element, item.name.slice(lastWord.length - 1))
+				console.log(lastWord);
+
+				if(lastWord) insertAtCaret($element, item.name.slice(lastWord.length - 1))
 
 				clearList();
 			}
 
+			var selectFirst = function () {
+				console.log(list.first());
+				$(list.children()[0]).addClass('active');
+			}
+
+			var upSelect = function () {
+				var active = list.find('.active');
+				if(active)
+					active.removeClass('active').prev().addClass('active');
+				else
+					selectFirst();
+			}
+
+			var downSelect = function () {
+				var active = list.find('.active');
+				if(active)
+					active.removeClass('active').next().addClass('active');
+				else
+					selectFirst();
+			}
+
+			$element.on('keydown', function (e) {
+				var key = e.which || e.keyCode;
+
+				if(key == 38) {
+					e.preventDefault();
+					upSelect();
+				}
+
+				else if(key == 40) {
+					e.preventDefault();
+					downSelect();
+				}
+			})
+
 			$element.on('keyup', function (e) {
+
 				delay(function () {
 					searchByMatches($element.val());
 				}, options.delay);
-			})
+			});
 		},
 
 		scope: {
