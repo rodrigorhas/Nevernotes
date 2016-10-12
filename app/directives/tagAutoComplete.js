@@ -42,7 +42,8 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 			options = $.extend($attrs, defaults);
 
-			var tagPattern = /#(\w*(?:\s*\w*))$/g;
+			//var tagPattern = /#(\w*(?:\s*\w*))$/g;
+			var tagPattern = /(^|\W)(#[a-z\d][\w-]*)/g;
 
 			var resetWarn = function () {
 				$timeout(function () { $scope.warn = "" });
@@ -93,20 +94,29 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			var searchByMatches = function (value) {
 
 				var returnWord = function (text, caretPos) {
-					var index = text.indexOf(caretPos);
+					var endOfWord = false;
+					
 					var preText = text.substring(0, caretPos);
+					if(caretPos == text.length) endOfWord = true;
 					if (preText.indexOf(" ") > 0) {
 						var words = preText.split(" ");
-			            return words[words.length - 1]; //return last word
+			            return {word: words[words.length - 1], end: endOfWord} //return last word
 			        }
 			        else {
-			        	return preText;
+			        	return {word: preText, end: endOfWord};
 			        }
 			    }
 
 			    var currentWord = returnWord(value, getCaretPosition($element[0]).end);
 
-			    var firstMatch = value.match(new RegExp('\\s?' + currentWord + '\\s?', 'g'));
+
+ 			    if(currentWord.end && currentWord.word.trim()) {
+ 			    	console.log('end');
+			    	console.log(currentWord.word.trim());
+ 			    	processMatch(currentWord.word.slice(1))
+ 			    }
+
+			    /*var firstMatch = value.match(new RegExp('\\s?' + currentWord + '\\s?', 'g'));
 
 			    if(firstMatch && firstMatch.length) {
 			    	firstMatch = firstMatch[0].trim();
@@ -115,7 +125,7 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			    	}
 
 			    	else clearList();
-			    }
+			    }*/
 
 			    /*var matches = value.match(tagPattern);
 
