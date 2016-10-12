@@ -21,6 +21,7 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 		controller: function ($scope, $element, $attrs) {
 
 			var list = $("#tagAutocomplete-list");
+			var onItemClick = false;
 
 			var defaults = {
 				delay: 300
@@ -46,11 +47,17 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			var tagPattern = /(^|\W)(#[a-z\d][\w-]*)/g;
 
 			var resetWarn = function () {
-				$timeout(function () { $scope.warn = "" });
+				$timeout(function () {
+					if($scope.warn)
+						$scope.warn = "";
+				});
 			}
 
 			var clearList = function () {
-				$timeout(function () { $scope.list = []; });
+				$timeout(function () { 
+					if($scope.list.length)
+						$scope.list = [];
+				});
 			}
 
 			var populateList = function (matches) {
@@ -91,13 +98,41 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 			}
 
+			function getWord() {
+				var sel, word = "";
+				if (window.getSelection && (sel = window.getSelection()).modify) {
+					var selectedRange = sel.getRangeAt(0);
+					sel.collapseToStart();
+					sel.modify("move", "backward", "word");
+					sel.modify("extend", "forward", "word");
+
+					word = sel.toString();
+
+					sel.removeAllRanges();
+					sel.addRange(selectedRange);
+				} else if ( (sel = document.selection) && sel.type != "Control") {
+					var range = sel.createRange();
+					range.collapse(true);
+					range.expand("word");
+					word = range.text;
+				}
+
+				return word;
+			}
+
 			var searchByMatches = function (value) {
 
 				var returnWord = function (text, caretPos) {
 					var endOfWord = false;
 					
 					var preText = text.substring(0, caretPos);
-					if(caretPos == text.length) endOfWord = true;
+
+					console.log(text, text.length, caretPos);
+
+					if(caretPos == text.length){
+						endOfWord = true;
+					}
+
 					if (preText.indexOf(" ") > 0) {
 						var words = preText.split(" ");
 			            return {word: words[words.length - 1], end: endOfWord} //return last word
@@ -107,43 +142,83 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			        }
 			    }
 
-			    var currentWord = returnWord(value, getCaretPosition($element[0]).end);
+			    var escapeRegExp = function (str) {
+			    	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+			    }
 
+			    $timeout(function () {
 
- 			    if(currentWord.end && currentWord.word.trim()) {
- 			    	console.log('end');
-			    	console.log(currentWord.word.trim());
- 			    	processMatch(currentWord.word.slice(1))
- 			    }
+			    	var caretPos = getCaretPosition($element[0]);
+			    	var result = /\S+$/.exec(value.slice(0, caretPos.end));
+			    	var lastWord = result ? result[0] : null;
+			    	var currentWord = returnWord(value, caretPos.end);
 
-			    /*var firstMatch = value.match(new RegExp('\\s?' + currentWord + '\\s?', 'g'));
+			    	var currentWord2 = getWord();
 
-			    if(firstMatch && firstMatch.length) {
-			    	firstMatch = firstMatch[0].trim();
-			    	if(firstMatch.length > 1) {
-			    		return processMatch(firstMatch.substring(1));
+			    	console.info(currentWord2);
+
+			    	var length = currentWord.word.length;
+			    	console.log((value.length - 1 == caretPos.end));
+			    	console.log(currentWord.word);
+
+			    	var matches = value.match(new RegExp(escapeRegExp(currentWord.word)));
+			    	console.log(matches);
+
+			    	var matchStart = matches.index;
+			    	console.log(matchStart);
+
+			    	console.log(caretPos.end, matchStart + length);
+			    	console.log(matchStart + currentWord.word.length == caretPos.end);
+
+			    	if(caretPos.end == matchStart + length) {
+			    		console.log(currentWord.word, lastWord);
+			    		processMatch(currentWord.word.slice(1))
 			    	}
 
-			    	else clearList();
-			    }*/
+			    	return;
 
-			    /*var matches = value.match(tagPattern);
 
-			    console.log(matches);
 
-			    if(matches) {
-			    	match = matches[0];
 
-			    	if(match.length > 1) {
-						// remove # from the string
-						processMatch(match.substring(1));
-					}
 
-					else {
-						resetWarn();
-						clearList();
-					} 
-				}*/
+			    	if(currentWord | !currentWord.end){
+			    		clearList();
+			    		resetWarn();
+			    		console.log('hide list');
+			    	}
+
+			    	currentWord.word = currentWord.word.trim();
+			    	var lastCharIsParentesis = currentWord.word[currentWord.word.length - 1] == ")"
+			    	var firstChar = currentWord.word[0];
+			    	var secondChar = currentWord.word[1];
+			    	var length = currentWord.word.length;
+
+			    	if(
+			    		((firstChar == "(" &&
+			    			secondChar == "#" &&
+			    			length > 2) | 
+			    		(firstChar == "#" && 
+			    			length > 1)) && 
+			    		!lastCharIsParentesis |
+			    		lastCharIsParentesis && (value.length -1 == caretPos.end)
+			    		) {
+			    		console.log('valid tag');
+			    	console.log(currentWord.word.trim());
+			    	processMatch(currentWord.word.slice(1))
+			    }
+
+			    else if(lastCharIsParentesis && (value.length -1 == caretPos.end)) {
+			    	console.info("#word) case");
+			    	console.log(value);
+			    	console.log(currentWord.word.slice(1, -1));
+			    	processMatch(currentWord.word.slice(1, -1))
+			    }
+
+			    else {
+			    	clearList();
+			    	resetWarn();
+			    }
+			});
 			}
 
 			function getCaretPosition(ctrl) {
@@ -201,16 +276,15 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			}
 
 			$scope.selectItem = function (item) {
+				onItemClick = true;
 				var caret = getCaretPosition($element[0]);
 				var value = $element.val();
 				var result = /\S+$/.exec(value.slice(0, caret.end));
 				var lastWord = result ? result[0] : null;
 
-				console.log(lastWord);
-
 				if(lastWord) insertAtCaret($element, item.name.slice(lastWord.length - 1))
 
-				clearList();
+					clearList();
 			}
 
 			var selectFirst = function () {
@@ -253,6 +327,20 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 				delay(function () {
 					searchByMatches($element.val());
 				}, options.delay);
+			});
+
+			$element.on('focus', function () {
+				if(!onItemClick) {
+					searchByMatches($element.val());
+				}
+				else onItemClick = false;
+			});
+
+			$element.on('blur', function () {
+				$timeout(function () {
+					clearList();
+					resetWarn();
+				}, 200);
 			});
 		},
 
