@@ -1,5 +1,6 @@
 body {
 	padding: 0;
+	position: relative;
 }
 
 .fixed {
@@ -218,6 +219,8 @@ body {
 }
 
 .searchbar {
+	position: relative;
+
 	a {
 		display: inline-block;
 	    margin-right: 22px;
@@ -242,4 +245,27 @@ body {
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
+}
+
+#tagAutocomplete-list {
+	border-radius: 2px;
+	box-shadow: 0 8px 17px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+	margin: 0;
+	padding: 8px 0;
+	list-style-type: none;
+	z-index: 10;
+	background-color: white;
+
+	li {
+		display: block;
+
+		a {
+			display: block;
+			padding: 8px 12px;
+		}
+	}
+
+	span {
+		padding: 8px 12px;
+	}
 }

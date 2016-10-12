@@ -218,59 +218,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	    }
 	});
 
-	(function ( $ ) {
-
-		$.fn.tagComplete = function (options) {
-
-			var defaults = {
-				delay: 300
-			}
-
-			options = $.extend(options, defaults);
-
-			return this.each(function () {
-				var self = $(this),
-				tagPattern = /(^|\s)#(\w*(?:\s*\w*))$/g;
-
-				var delay = (function(){
-					var timer = 0;
-					return function(callback, ms){
-						clearTimeout (timer);
-						timer = setTimeout(callback, ms);
-					};
-				})();
-
-				var processMatch = function (match) {
-					console.log("Processing", match);
-				}
-
-				var searchByMatches = function (value) {
-					var matches = value.match(tagPattern);
-
-					if(matches) {
-						match = matches[0];
-
-						if(match.length > 1) {
-							// remove # from the string
-							processMatch(match.substring(1));
-						}
-					}
-				}
-
-				self.on('keyup', function (e) {
-					delay(function () {
-						searchByMatches(self.val());
-					}, options.delay);
-				})
-			});
-		}
-
-	})(jQuery);
-
-	$("textarea").tagComplete({
-		delay: 1000
-	});
-
 	$.exists = function(item, array) { return !!~$.inArray(item, array); };
 
 	function $log (text) {

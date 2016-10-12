@@ -25,7 +25,7 @@
 						<a href="#menu" class="btn btn-default" data-toggle="modal">
 							<icon name="settings"></icon>
 						</a>
-						<input type="text" ng-model="search" placeholder="Pesquise por tags ou notas">
+						<input id="searchBar" tag-autocomplete tags="Tags" type="text" ng-model="search" placeholder="Pesquise por tags ou notas">
 						<span>{{getTags(search, true)}}</span>
 					</div>
 
@@ -234,6 +234,7 @@
 	<script src="app/services/store.js"></script>
 
 	<script src="app/directives/btn-class.js"></script>
+	<script src="app/directives/tagAutoComplete.js"></script>
 	<script src="app/directives/icon.js"></script>
 	<script src="app/directives/autogrow.js"></script>
 </body>
