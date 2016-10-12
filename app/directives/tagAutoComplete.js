@@ -148,31 +148,63 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 			    $timeout(function () {
 
-			    	var caretPos = getCaretPosition($element[0]);
-			    	var result = /\S+$/.exec(value.slice(0, caretPos.end));
-			    	var lastWord = result ? result[0] : null;
-			    	var currentWord = returnWord(value, caretPos.end);
+			    	var token = new Cursores().token($element[0]);
+			    	console.log(token);
 
-			    	var currentWord2 = getWord();
+		    		var firstPrefixCharIsSymbol = /\W/.test(token.prefix[0]);
+		    		var lastPrefixCharIsSymbol = /\W/.test(token.prefix[token.prefix.length - 1]);
+		    		var lastSuffixCharIsSymbol = /\W/.test(token.suffix[token.suffix.length - 1]);
+		    		var hasSuffix = !!token.suffix.length;
+		    		var tagHasSymbol = /\W/.test(token.prefix.substring(1));
+			    	var isValidTag = token.prefix[0] == "#" && !tagHasSymbol;
+			    	var firstPrefixChar = token.prefix[0];
 
-			    	console.info(currentWord2);
+			    	var hideList = function () {
+			    		clearList();
+			    		resetWarn();
+			    	}
 
-			    	var length = currentWord.word.length;
-			    	console.log((value.length - 1 == caretPos.end));
-			    	console.log(currentWord.word);
+		    		if(
+		    			lastPrefixCharIsSymbol ||
+		    			(
+		    				firstPrefixCharIsSymbol && 
+		    				firstPrefixChar != "#" &&
+		    				firstPrefixChar != "("
+		    			)
+		    		) {
+		    			console.log('write');
+		    			clearList();
+			    		resetWarn();
+		    			return;
+		    		}
 
-			    	var matches = value.match(new RegExp(escapeRegExp(currentWord.word)));
-			    	console.log(matches);
+			    	if(isValidTag) {
 
-			    	var matchStart = matches.index;
-			    	console.log(matchStart);
+				    	if(!hasSuffix && !lastPrefixCharIsSymbol) {
+				    		processMatch(token.prefix.slice(1))
+				    	}
 
-			    	console.log(caretPos.end, matchStart + length);
-			    	console.log(matchStart + currentWord.word.length == caretPos.end);
+				    	else if(lastSuffixCharIsSymbol && !lastPrefixCharIsSymbol && token.suffix.length == 1) {
+				    		processMatch(token.prefix.slice(1))
+				    	}
 
-			    	if(caretPos.end == matchStart + length) {
-			    		console.log(currentWord.word, lastWord);
-			    		processMatch(currentWord.word.slice(1))
+				    	else if(firstPrefixCharIsSymbol && !hasSuffix) {
+				    		processMatch(token.prefix.slice(1))
+				    	}
+
+				    	else hideList()
+			    	}
+
+			    	else {
+			    		if (firstPrefixChar == "#" && !hasSuffix) {
+				    		processMatch(token.prefix.slice(1))
+			    		}
+
+			    		else if(firstPrefixCharIsSymbol && !hasSuffix) {
+				    		processMatch(token.prefix.slice(2))
+			    		}
+
+			    		else hideList()
 			    	}
 
 			    	return;
