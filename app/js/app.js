@@ -146,7 +146,59 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	$scope.Store = $localStorage["nevernotes-store"];
 	$log("Store loaded");
 
-	$scope.Tags = $localStorage['nevernotes-tags'];
+	$scope.Tags = {
+		dataset: $localStorage['nevernotes-tags'],
+
+		add: function (tags) {
+			var self = this;
+
+			tags.forEach(function (tag) {
+				self.addOne(tag);
+			});
+		},
+
+		addOne: function (tag) {
+			var self = this,
+				now = Date.now(),
+				index;
+
+			var exists = function (tag) {
+				var e = false;
+				for (var i = 0; i < self.dataset.length; i++) {
+					var item = self.dataset[i];
+
+					if(item.name == tag.name) {
+						e = item;
+						break
+					}
+				}
+
+				return e;
+			}
+
+			var res = exists(tag);
+
+			if(res) {
+				++res.quantity;
+				res.keys.push({timestamp: now});
+			}
+
+			else {
+				self.dataset.push({"name": tag.name, "quantity": 1, time: now, keys: []});
+			}
+		},
+
+		remove: function (index) {
+			var self = this;
+			return self.dataset.splice(index, 1)
+		},
+
+		get: function (tag) {
+			var self = this;
+			return self.dataset[tag];
+		}
+	}
+
 	$log("Tags loaded");
 
 	$log("Getting audio files from fileSystem");
@@ -236,9 +288,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		$scope.Store.forEach(function (item) {
 			if(item.audios) {
 				item.audios.forEach(function (audio) {
-					var audioFile = getAudioFile(audio);
-
-					audioFile.then(function (url) {
+					getAudioFile(audio).then(function (url) {
 						audio.url = url;
 					})
 				})
@@ -313,7 +363,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 				if(group.length == 0) {
 					output.words = "()";
-					return output;
+					return notice ? "" : output;
 				}
 
 				var splited = group.split(/\s+/g);
@@ -429,6 +479,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					tags: self.tags,
 					audios: ($scope.audioMode) ? self.audios : []
 				};
+
+				$scope.Tags.add(self.tags);
 
 				for (var i = 0; i < $scope.Store.length; i++) {
 					var item = $scope.Store[i];
