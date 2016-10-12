@@ -16,11 +16,9 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 				console.log(offset, element.parent());
 
-				list.css({left: offset.left, top: offset.top})
-
 				list = $compile(list)(scope);
 
-				list.appendTo('body');
+				list.appendTo('.searchbar');
 			}
 		},
 
@@ -48,7 +46,7 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 			options = $.extend($attrs, defaults);
 
-			tagPattern = /#(\w*(?:\s*\w*))$/g;
+			var tagPattern = /#(\w*(?:\s*\w*))$/g;
 
 			var resetWarn = function () {
 				$timeout(function () { $scope.warn = "" });
@@ -97,12 +95,38 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			}
 
 			var searchByMatches = function (value) {
-				var matches = value.match(tagPattern);
 
-				if(matches) {
-					match = matches[0];
+				var returnWord = function (text, caretPos) {
+					var index = text.indexOf(caretPos);
+					var preText = text.substring(0, caretPos);
+					if (preText.indexOf(" ") > 0) {
+						var words = preText.split(" ");
+			            return words[words.length - 1]; //return last word
+			        }
+			        else {
+			        	return preText;
+			        }
+			    }
 
-					if(match.length > 1) {
+			    var currentWord = returnWord(value, getCaretPosition($element[0]).end);
+
+			    var firstMatch = value.match(new RegExp('\\s?' + currentWord + '\\s', 'g'));
+
+			    if(firstMatch && firstMatch.length) {
+			    	firstMatch = firstMatch[0].trim();
+			    	if(firstMatch.length > 1) {
+			    		return processMatch(firstMatch.substring(1));
+			    	}
+			    }
+
+			    var matches = value.match(tagPattern);
+
+			    console.log(matches);
+
+			    if(matches) {
+			    	match = matches[0];
+
+			    	if(match.length > 1) {
 						// remove # from the string
 						processMatch(match.substring(1));
 					}
@@ -130,12 +154,51 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 				}
 			}
 
-			$scope.selectItem = function (item) {
-				var caret = getCaretPosition($element);
+			function insertAtCaret(element, text) {
+				if (!element) { return; }
 
-				var result = /\S+$/.exec($element.val().slice(0, caret.end));
+				element = element[0];
+
+				var scrollPos = element.scrollTop;
+				var strPos = 0;
+				var br = ((element.selectionStart || element.selectionStart == '0') ?
+					"ff" : (document.selection ? "ie" : false ) );
+				if (br == "ie") {
+					element.focus();
+					var range = document.selection.createRange();
+					range.moveStart ('character', -element.value.length);
+					strPos = range.text.length;
+				} else if (br == "ff") {
+					strPos = element.selectionStart;
+				}
+
+				var front = (element.value).substring(0, strPos);
+				var back = (element.value).substring(strPos, element.value.length);
+				element.value = front + text + back;
+				strPos = strPos + text.length;
+				if (br == "ie") {
+					element.focus();
+					var ieRange = document.selection.createRange();
+					ieRange.moveStart ('character', -element.value.length);
+					ieRange.moveStart ('character', strPos);
+					ieRange.moveEnd ('character', 0);
+					ieRange.select();
+				} else if (br == "ff") {
+					element.selectionStart = strPos;
+					element.selectionEnd = strPos;
+					element.focus();
+				}
+
+				element.scrollTop = scrollPos;
+			}
+
+			$scope.selectItem = function (item) {
+				var caret = getCaretPosition($element[0]);
+				var value = $element.val();
+				var result = /\S+$/.exec(value.slice(0, caret.end));
 				var lastWord = result ? result[0] : null;
-				alert(lastWord);
+
+				insertAtCaret($element, item.name.slice(lastWord.length - 1))
 
 				clearList();
 			}
