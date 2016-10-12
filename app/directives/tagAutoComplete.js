@@ -43,216 +43,6 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 			options = $.extend($attrs, defaults);
 
-			//var tagPattern = /#(\w*(?:\s*\w*))$/g;
-			var tagPattern = /(^|\W)(#[a-z\d][\w-]*)/g;
-
-			var resetWarn = function () {
-				$timeout(function () {
-					if($scope.warn)
-						$scope.warn = "";
-				});
-			}
-
-			var clearList = function () {
-				$timeout(function () { 
-					if($scope.list.length)
-						$scope.list = [];
-				});
-			}
-
-			var populateList = function (matches) {
-				$timeout(function () { $scope.list = matches; resetWarn()})
-			}
-
-			var delay = (function(){
-				var timer = 0;
-				return function(callback, ms){
-					clearTimeout (timer);
-					timer = setTimeout(callback, ms);
-				};
-			})();
-
-			var warnUser = function (warn) {
-				if(warn) {
-					$timeout(function () { $scope.warn = warn; });
-				}
-			}
-
-			var processMatch = function (match) {
-
-				var matches = $scope.tags.dataset.filter(function (tag) {
-					if(tag.name.indexOf(match) == 0 && tag.quantity) {
-						return true;
-					}
-				});
-
-				if(matches.length) {
-					populateList(matches);
-					warnUser(false);
-				}
-
-				else {
-					clearList();
-					warnUser('Nenhum resultado para: "' + match + '"');
-				}
-
-			}
-
-			function getWord() {
-				var sel, word = "";
-				if (window.getSelection && (sel = window.getSelection()).modify) {
-					var selectedRange = sel.getRangeAt(0);
-					sel.collapseToStart();
-					sel.modify("move", "backward", "word");
-					sel.modify("extend", "forward", "word");
-
-					word = sel.toString();
-
-					sel.removeAllRanges();
-					sel.addRange(selectedRange);
-				} else if ( (sel = document.selection) && sel.type != "Control") {
-					var range = sel.createRange();
-					range.collapse(true);
-					range.expand("word");
-					word = range.text;
-				}
-
-				return word;
-			}
-
-			var searchByMatches = function (value) {
-
-				var returnWord = function (text, caretPos) {
-					var endOfWord = false;
-					
-					var preText = text.substring(0, caretPos);
-
-					console.log(text, text.length, caretPos);
-
-					if(caretPos == text.length){
-						endOfWord = true;
-					}
-
-					if (preText.indexOf(" ") > 0) {
-						var words = preText.split(" ");
-			            return {word: words[words.length - 1], end: endOfWord} //return last word
-			        }
-			        else {
-			        	return {word: preText, end: endOfWord};
-			        }
-			    }
-
-			    var escapeRegExp = function (str) {
-			    	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-			    }
-
-			    $timeout(function () {
-
-			    	var token = new Cursores().token($element[0]);
-			    	console.log(token);
-
-		    		var firstPrefixCharIsSymbol = /\W/.test(token.prefix[0]);
-		    		var lastPrefixCharIsSymbol = /\W/.test(token.prefix[token.prefix.length - 1]);
-		    		var lastSuffixCharIsSymbol = /\W/.test(token.suffix[token.suffix.length - 1]);
-		    		var hasSuffix = !!token.suffix.length;
-		    		var tagHasSymbol = /\W/.test(token.prefix.substring(1));
-			    	var isValidTag = token.prefix[0] == "#" && !tagHasSymbol;
-			    	var firstPrefixChar = token.prefix[0];
-
-			    	var hideList = function () {
-			    		clearList();
-			    		resetWarn();
-			    	}
-
-		    		if(
-		    			lastPrefixCharIsSymbol ||
-		    			(
-		    				firstPrefixCharIsSymbol && 
-		    				firstPrefixChar != "#" &&
-		    				firstPrefixChar != "("
-		    			)
-		    		) {
-		    			console.log('write');
-		    			clearList();
-			    		resetWarn();
-		    			return;
-		    		}
-
-			    	if(isValidTag) {
-
-				    	if(!hasSuffix && !lastPrefixCharIsSymbol) {
-				    		processMatch(token.prefix.slice(1))
-				    	}
-
-				    	else if(lastSuffixCharIsSymbol && !lastPrefixCharIsSymbol && token.suffix.length == 1) {
-				    		processMatch(token.prefix.slice(1))
-				    	}
-
-				    	else if(firstPrefixCharIsSymbol && !hasSuffix) {
-				    		processMatch(token.prefix.slice(1))
-				    	}
-
-				    	else hideList()
-			    	}
-
-			    	else {
-			    		if (firstPrefixChar == "#" && !hasSuffix) {
-				    		processMatch(token.prefix.slice(1))
-			    		}
-
-			    		else if(firstPrefixCharIsSymbol && !hasSuffix) {
-				    		processMatch(token.prefix.slice(2))
-			    		}
-
-			    		else hideList()
-			    	}
-
-			    	return;
-
-
-
-
-
-			    	if(currentWord | !currentWord.end){
-			    		clearList();
-			    		resetWarn();
-			    		console.log('hide list');
-			    	}
-
-			    	currentWord.word = currentWord.word.trim();
-			    	var lastCharIsParentesis = currentWord.word[currentWord.word.length - 1] == ")"
-			    	var firstChar = currentWord.word[0];
-			    	var secondChar = currentWord.word[1];
-			    	var length = currentWord.word.length;
-
-			    	if(
-			    		((firstChar == "(" &&
-			    			secondChar == "#" &&
-			    			length > 2) | 
-			    		(firstChar == "#" && 
-			    			length > 1)) && 
-			    		!lastCharIsParentesis |
-			    		lastCharIsParentesis && (value.length -1 == caretPos.end)
-			    		) {
-			    		console.log('valid tag');
-			    	console.log(currentWord.word.trim());
-			    	processMatch(currentWord.word.slice(1))
-			    }
-
-			    else if(lastCharIsParentesis && (value.length -1 == caretPos.end)) {
-			    	console.info("#word) case");
-			    	console.log(value);
-			    	console.log(currentWord.word.slice(1, -1));
-			    	processMatch(currentWord.word.slice(1, -1))
-			    }
-
-			    else {
-			    	clearList();
-			    	resetWarn();
-			    }
-			});
-			}
-
 			function getCaretPosition(ctrl) {
 				var start, end;
 				if (ctrl.setSelectionRange) {
@@ -307,16 +97,168 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 				element.scrollTop = scrollPos;
 			}
 
+			var resetWarn = function () {
+				$timeout(function () {
+					if($scope.warn)
+						$scope.warn = "";
+				});
+			}
+
+			var clearList = function () {
+				$timeout(function () { 
+					if($scope.list.length)
+						$scope.list = [];
+				});
+			}
+
+			var hideList = function () {
+	    		clearList();
+	    		resetWarn();
+	    	}
+
+			var populateList = function (matches) {
+				$timeout(function () { $scope.list = matches; resetWarn(); })
+			}
+
+			var delay = (function(){
+				var timer = 0;
+				return function(callback, ms){
+					clearTimeout (timer);
+					timer = setTimeout(callback, ms);
+				};
+			})();
+
+			var warnUser = function (warn) {
+				if(warn) {
+					$timeout(function () { $scope.warn = warn; });
+				}
+			}
+
+			var processMatch = function (match) {
+
+				var matches = $scope.tags.dataset.filter(function (tag) {
+					if(tag.name.indexOf(match) == 0 && tag.quantity) {
+						return true;
+					}
+				});
+
+				if(matches.length) {
+					populateList(matches);
+					warnUser(false);
+				}
+
+				else {
+					clearList();
+					warnUser('Nenhum resultado para: "' + match + '"');
+				}
+
+			}
+
+			var searchByMatches = function (value) {
+
+				var returnWord = function (text, caretPos) {
+					var endOfWord = false;
+					
+					var preText = text.substring(0, caretPos);
+
+					console.log(text, text.length, caretPos);
+
+					if(caretPos == text.length){
+						endOfWord = true;
+					}
+
+					if (preText.indexOf(" ") > 0) {
+						var words = preText.split(" ");
+			            return {word: words[words.length - 1], end: endOfWord} //return last word
+			        }
+			        else {
+			        	return {word: preText, end: endOfWord};
+			        }
+			    }
+
+			    var escapeRegExp = function (str) {
+			    	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+			    }
+
+			    $timeout(function () {
+
+			    	var token = new Cursores().token($element[0]);
+
+			    	// var teststring = "(#a #a) #a (#a)  (#1 #1 | (#- -#a";
+
+			    	//console.log(token);
+
+		    		var firstPrefixCharIsSymbol = /\W/.test(token.prefix[0]);
+		    		var secondPrefixCharIsSymbol = /\W/.test(token.prefix[1]);
+		    		var lastPrefixCharIsSymbol = /\W/.test(token.prefix[token.prefix.length - 1]);
+		    		var lastSuffixCharIsSymbol = /\W/.test(token.suffix[token.suffix.length - 1]);
+		    		var hasSuffix = !!token.suffix.length;
+		    		var tagHasSymbol = /\W/.test(token.prefix.substring(1));
+			    	var isValidTag = token.prefix[0] == "#" && !tagHasSymbol;
+			    	var firstPrefixChar = token.prefix[0];
+			    	var secondPrefixChar = token.prefix[1];
+
+			    	var test1 = lastPrefixCharIsSymbol;
+			    	var test2 = firstPrefixCharIsSymbol && firstPrefixChar != "#" && firstPrefixChar != "(";
+			    	var test3 = firstPrefixCharIsSymbol && secondPrefixCharIsSymbol && secondPrefixChar != "#";
+			    	var test4 = !/\#\w*/.test(token.prefix) && !/\(#/.test(token.prefix);
+
+			    	///console.log(test1, test2, test3, test4);
+
+		    		if(test1 || test2 || test3 || test4) return hideList();
+
+			    	if(isValidTag) {
+			    		var test1 = !hasSuffix && !lastPrefixCharIsSymbol;
+			    		var test2 = lastSuffixCharIsSymbol && !lastPrefixCharIsSymbol && token.suffix.length == 1
+			    		var test3 = firstPrefixCharIsSymbol && !hasSuffix;
+
+			    		//console.log(test1, test2, test3);
+
+				    	if(test1 || test2 || test3) {
+				    		processMatch(token.prefix.slice(1))
+				    	}
+
+				    	else hideList()
+			    	}
+
+			    	else {
+			    		//console.log(token);
+			    		var test1 = firstPrefixChar == "#" && !hasSuffix;
+			    		var test2 = firstPrefixCharIsSymbol && !hasSuffix;
+			    		var test3 = firstPrefixCharIsSymbol && lastSuffixCharIsSymbol && token.prefix.length > 2;
+
+			    		//console.log(test1, test2);
+
+			    		if (test1) {
+				    		processMatch(token.prefix.slice(1))
+			    		}
+
+			    		else if(test2 || test3) {
+				    		processMatch(token.prefix.slice(2))
+			    		}
+
+			    		else hideList()
+			    	}
+				});
+			}
+
 			$scope.selectItem = function (item) {
 				onItemClick = true;
 				var caret = getCaretPosition($element[0]);
 				var value = $element.val();
 				var result = /\S+$/.exec(value.slice(0, caret.end));
 				var lastWord = result ? result[0] : null;
+				var removeSymbols = lastWord.length - 1;
 
-				if(lastWord) insertAtCaret($element, item.name.slice(lastWord.length - 1))
 
-					clearList();
+				if(lastWord){
+					if(lastWord[0] == "(" && lastWord[1] == "#")
+						removeSymbols--;
+
+					insertAtCaret($element, item.name.slice(removeSymbols))
+				}
+
+				hideList();
 			}
 
 			var selectFirst = function () {

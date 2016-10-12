@@ -378,10 +378,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		}
 	}
 
-	$timeout(function() {
-		$scope.search = "(#a #alcorao) #a -#a";
-	});
-
 	$scope.post = {
 		id: "",
 		value: "",
