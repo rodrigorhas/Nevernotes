@@ -33,10 +33,6 @@
 						<div class="content-wrapper">
 							<textarea auto-grow ng-bind-html="post.getText()" ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
 						</div>
-						<div class="extension padding">
-							<input type="checkbox" ng-model="Config.enterOption" id="enter-option" />
-							<label for="enter-option">Aperte enter para criar uma anotação</label>
-						</div>
 						<div class="padding audio-list" ng-if="audioMode == true">
 							<div>
 								<button class="btn btn-primary" ng-mousedown="Audio.record($event)"  ng-touchstart="Audio.record($event)">
@@ -178,6 +174,14 @@
 						Espaço disponivel: ≃ <strong>{{humanFileSize(Config.quota.quota, true)}}</strong>
 						<br>
 						Espaço em uso: ≃ <strong>{{humanFileSize(Config.quota.used, true)}}</strong>
+					</p>
+
+					<h5>Preferências</h5>
+					<p>
+						<div class="padding">
+							<input type="checkbox" ng-model="Config.enterOption" id="enter-option" />
+							<label for="enter-option">Pressionar <b>ENTER</b> para criar anotação</label>
+						</div>
 					</p>
 
 					<h5>Cache</h5>
