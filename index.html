@@ -15,16 +15,15 @@
 
 	<div class="container">
 
-		<div class="log" style="overflow-y: auto;height:150px" ng-show="Config.debugMode == true"></div>
-
 		<div class="row">
 			<div class="col-lg-6">
 				<div class="col-lg-4 col-sm-12 fixed">
 
 					<div class="searchbar">
-						<a href="#menu" class="btn btn-default" data-toggle="modal">
+						<a href="#menu" class="btn btn-default" ng-click="loadConfig();" data-toggle="modal">
 							<icon name="settings"></icon>
 						</a>
+
 						<input id="searchBar" autofocus tag-autocomplete tags="Tags" type="text" ng-model="search" placeholder="Pesquise por tags ou notas">
 						<span>{{getTags(search, true)}}</span>
 					</div>
@@ -113,6 +112,9 @@
 			</div>
 			<div class="col-lg-6">
 				<div class="col-lg-10 col-lg-offset-1">
+
+					<div class="log" ng-show="Config.debugMode == true"></div>
+
 					<div class="post-list">
 						<div class="post" ng-repeat="$post in Store | filterByTags: getTags(search)">
 							<div class="content">

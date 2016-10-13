@@ -200,9 +200,14 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			}
 		},
 
-		get: function (tag) {
+		getTag: function (tag) {
 			var self = this;
 			return self.dataset[tag];
+		},
+
+		getDataset: function () {
+			var self = this;
+			return self.dataset;
 		}
 	}
 
@@ -260,6 +265,9 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			});
 		})
 	}
+
+	window.scope = $scope;
+	window.fileSystem = fileSystem;
 
 	function randomHash () {
 		return Math.random().toString(36).substring(2);
@@ -709,20 +717,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 		})
 	}
 
-	fileSystem.getCurrentUsage().then(function (usage) {
-		$log("Current browser quota is " + $scope.humanFileSize(usage.quota));
-		$log("Current browser used quota is " + $scope.humanFileSize(usage.used));
-
-		$scope.Config.quota = usage;
-
-		if(usage.quota <= 0) {
-			$log("Setting browser quota to 1GB");
-			fileSystem.requestQuota(1 * 1024 * 1024).then(function (e) {
-				$log(e);
-			});
-		}
-	})
-
 	window.onload = function init() {
 		try {
 	        // webkit shim
@@ -809,4 +803,22 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			})
 		}
 	}
+
+	$scope.loadConfig = function () {
+		fileSystem.getCurrentUsage().then(function (usage) {
+			$log("Current browser quota is " + $scope.humanFileSize(usage.quota));
+			$log("Current browser used quota is " + $scope.humanFileSize(usage.used));
+
+			$scope.Config.quota = usage;
+
+			if(usage.quota <= 0) {
+				$log("Setting browser quota to 1GB");
+				fileSystem.requestQuota(1 * 1024 * 1024).then(function (e) {
+					$log(e);
+				});
+			}
+		})
+	}
+
+	$scope.loadConfig();
 });
