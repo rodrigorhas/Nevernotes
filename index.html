@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="fonts/zmdi/css/material-design-iconic-font.min.css">
 	<link rel="stylesheet" href="app/vendors/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="app/css/app.min.css">
+	<link rel="stylesheet" href="app/vendors/materializecss/index.css">
 	<link rel="stylesheet" href="app/css/style.css">
 
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -16,8 +17,8 @@
 	<div class="container">
 
 		<div class="row">
-			<div class="col-lg-6">
-				<div class="col-lg-4 col-sm-12 fixed">
+			<div class="col s12 m12 l6">
+				<div class="col l4 s12 fixed">
 
 					<div class="searchbar">
 						<a href="#menu" class="btn btn-default" ng-click="loadConfig();" data-toggle="modal">
@@ -32,8 +33,8 @@
 						<div class="content-wrapper">
 							<textarea auto-grow ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
 						</div>
-						<div class="padding">
-							<input type="checkbox" ng-model="post.enterOption" id="enter-option" />
+						<div class="extension padding">
+							<input type="checkbox" ng-model="Config.enterOption" id="enter-option" />
 							<label for="enter-option">Aperte enter para criar uma anotação</label>
 						</div>
 						<div class="padding audio-list" ng-if="audioMode == true">
@@ -110,8 +111,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-6">
-				<div class="col-lg-10 col-lg-offset-1">
+			<div class="col s12 l6">
+				<div class="col s12 m12 l12">
 
 					<div class="log" ng-show="Config.debugMode == true"></div>
 

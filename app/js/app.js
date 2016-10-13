@@ -479,7 +479,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			var self = this,
 			key = event.which || event.keyCode;
 
-			if(self.enterOption && key == 13) {
+			if($scope.Config.enterOption && key == 13) {
+				$scope.Config.enterOption = !$scope.Config.enterOption;
 				event.preventDefault();
 				self.save();
 			}

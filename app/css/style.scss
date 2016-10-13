@@ -29,7 +29,12 @@ body {
 		border: 0;
 		padding: 16px;
 		resize: none;
+		background-color: #fff;
 		border-radius: 3px 3px 0 0;
+	}
+
+	.padding.extension {
+		background-color: #fff;
 	}
 
 	.audio-list {
@@ -93,6 +98,7 @@ body {
 	}
 
 	.toolbar {
+		background-color: #eee;
 		padding: 8px;
 		ul {
 			margin: 0;
