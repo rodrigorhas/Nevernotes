@@ -31,7 +31,7 @@
 
 					<div class="easy-post">
 						<div class="content-wrapper">
-							<textarea auto-grow ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
+							<textarea auto-grow ng-bind-html="post.getText()" ng-model="post.value" ng-keyup="post.processInput($event)" placeholder="Escreva..." rows="4"></textarea>
 						</div>
 						<div class="extension padding">
 							<input type="checkbox" ng-model="Config.enterOption" id="enter-option" />
@@ -119,7 +119,7 @@
 					<div class="post-list">
 						<div class="post" ng-repeat="$post in Store | filterByTags: getTags(search)">
 							<div class="content">
-								<p class="text">
+								<p class="text" ng-bind-html="safeHtml($post.text)">
 									{{$post.text}}
 								</p>
 								<ul class="post-audios" ng-show="$post.audios.length">
@@ -219,6 +219,7 @@
 	<script src="app/vendors/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/angular/angular.min.js"></script>
 
+	<script src="app/vendors/angular/angular-sanitize.js"></script>
 	<script src="bower_components/ngstorage/ngStorage.min.js"></script>
 	<script src="bower_components/moment/min/moment.min.js"></script>
 	<script src="bower_components/ngtouch/build/ngTouch.min.js"></script>

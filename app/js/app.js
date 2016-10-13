@@ -1,4 +1,4 @@
-angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
+angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize'])
 
 .filter("filterByTags", function () {
 	return function (items, output) {
@@ -128,6 +128,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 	if(!$localStorage['nevernotes-config']) {
 		$localStorage['nevernotes-config'] = {
 			debugMode: false,
+			enterOption: false,
 			quota: {}
 		}
 	}
@@ -428,6 +429,15 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 			$scope.photoMode = false;
 		},
 
+		getText: function () {
+			var self = this;
+
+			if(self.value) {
+				return self.value
+						.replace(/\n/g, "</br>");
+			}
+		},
+
 		save: function () {
 
 			var self = this,
@@ -437,7 +447,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 
 				post = {
 					id: self.id || randomHash(),
-					text: self.value,
+					text: self.getText(),
 					tags: self.tags,
 					audios: ($scope.audioMode) ? self.audios : []
 				};
@@ -485,6 +495,10 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 				self.save();
 			}
 		}
+	}
+
+	$scope.safeHtml = function (html) {
+		return $sce.trustAsHtml(html);
 	}
 
 	$scope.removeTag = function (index) {
@@ -565,6 +579,8 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch'])
 					if(self.currentPost.audios.length){
 						$scope.audioMode = true;
 					}
+
+					console.log($scope.post);
 				});
 
 				$(".easy-post textarea").focus()
