@@ -7,7 +7,7 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 			var list = $("#tagAutocomplete-list");
 
 			if(!list.length) {
-				list = $('<ul ng-show="checkVisibility()"><li ng-repeat="$key in list" ng-click="selectItem($key)"><a href="#">{{$key.name}}</a><span class="label label-default pull-right">{{$key.quantity}}</span></li></ul>')
+				list = $('<ul ng-show="checkVisibility()"><li tabindex="0" ng-repeat="$key in list" ng-click="selectItem($key)"><a href="#">{{$key.name}}</a><span class="label label-default pull-right">{{$key.quantity}}</span></li></ul>')
 				.attr('id', "tagAutocomplete-list")
 				.css({position: 'absolute'})
 				.prepend($('<span ng-if="warn.length"><b><small>{{warn}}</small></b></span>')),
@@ -20,7 +20,10 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 		controller: function ($scope, $element, $attrs) {
 
-			var list = $("#tagAutocomplete-list");
+			function getList () {
+				return $("#tagAutocomplete-list");
+			}
+
 			var onItemClick = false;
 
 			var defaults = {
@@ -144,6 +147,9 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 
 				if(matches.length) {
 					populateList(matches);
+					$timeout(function () {
+						selectFirstListItem();
+					});
 					warnUser(false);
 				}
 
@@ -151,34 +157,9 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 					clearList();
 					warnUser('Nenhum resultado para: "' + match + '"');
 				}
-
 			}
 
 			var searchByMatches = function (value) {
-
-				var returnWord = function (text, caretPos) {
-					var endOfWord = false;
-					
-					var preText = text.substring(0, caretPos);
-
-					console.log(text, text.length, caretPos);
-
-					if(caretPos == text.length){
-						endOfWord = true;
-					}
-
-					if (preText.indexOf(" ") > 0) {
-						var words = preText.split(" ");
-			            return {word: words[words.length - 1], end: endOfWord} //return last word
-			        }
-			        else {
-			        	return {word: preText, end: endOfWord};
-			        }
-			    }
-
-			    var escapeRegExp = function (str) {
-			    	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-			    }
 
 			    $timeout(function () {
 
@@ -261,25 +242,46 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 				hideList();
 			}
 
-			var selectFirst = function () {
-				console.log(list.first());
+			var selectFirstListItem = function () {
+				var list = getList();
 				$(list.children()[0]).addClass('active');
 			}
 
 			var upSelect = function () {
+				var list = getList();
 				var active = list.find('.active');
-				if(active)
-					active.removeClass('active').prev().addClass('active');
-				else
-					selectFirst();
+				var prevElement = active.prev();
+				if(active.length) {
+					if(prevElement.length) {
+						active.removeClass('active')
+						prevElement.addClass('active');
+					}
+				}
+
+				else selectFirstListItem();
 			}
 
 			var downSelect = function () {
+				var list = getList();
 				var active = list.find('.active');
-				if(active)
-					active.removeClass('active').next().addClass('active');
-				else
-					selectFirst();
+				var nextElement = active.next();
+				if(active.length) {
+					if(nextElement.length) {
+						active.removeClass('active')
+						nextElement.addClass('active');
+					}
+				}
+
+				else selectFirstListItem();
+			}
+
+			var selectActiveListItem = function () {
+				var list = getList();
+				var active = list.find('.active');
+
+				if(active.length) {
+					active.click();
+				}
 			}
 
 			$element.on('keydown', function (e) {
@@ -294,28 +296,40 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 					e.preventDefault();
 					downSelect();
 				}
+
+				else if(key == 13) {
+					if($scope.list.length) {
+						selectActiveListItem();
+					}
+				}
 			})
 
 			$element.on('keyup', function (e) {
+				var key = e.which || e.keyCode;
+				var invalidKeys = [38, 40, 13];
 
-				delay(function () {
-					searchByMatches($element.val());
-				}, options.delay);
+				if(!$.exists(key, invalidKeys)) {
+					delay(function () {
+						searchByMatches($element.val());
+					}, options.delay);
+				}
+
 			});
 
 			$element.on('focus', function () {
 				if(!onItemClick) {
 					searchByMatches($element.val());
 				}
+
 				else onItemClick = false;
 			});
 
-			$element.on('blur', function () {
+			/*$element.on('blur', function () {
 				$timeout(function () {
 					clearList();
 					resetWarn();
 				}, 200);
-			});
+			});*/
 		},
 
 		scope: {
