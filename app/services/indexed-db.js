@@ -58,8 +58,34 @@ angular
 				});
 			},
 
-			insert: function () {
+			saveAudioFile: function () {
+				return new Promise (function (resolve, reject) {
+					$store.load().then(function (store) {
+						var tx = store.transaction(['audio'], "readwrite");
+						var objectStore = tx.objectStore('audio');
 
+						var request = objectStore.add({name: audio.name, blob: blob});
+
+						request.onsuccess = resolve;
+						request.onerror = reject;
+						tx.onerror = reject;
+					});
+				})
+			},
+
+			newTransaction: function (store) {
+				var self = this;
+
+				return new Promise (function (resolve, reject) {
+					self.load().then(function (db) {
+						var tx = db.transaction([store], "readwrite");
+						var objectStore = tx.objectStore(store);
+
+						tx.onerror = reject;
+
+						resolve({store: objectStore, transaction: tx});
+					})
+				})
 			},
 
 			getAll: function (store) {
@@ -68,22 +94,24 @@ angular
 				return new Promise (function (resolve, reject) {
 
 					self.load().then(function (db) {
-						var tx = db.transaction([store], "readwrite");
-						var objectStore = tx.objectStore(store);
-						var items = [];
+						self.newTransaction(store).then(function (response) {
+							var store = response.store;
+							var tx = response.transaction;
 
-						tx.onerror = reject;
-						tx.oncomplete = function () {
-							resolve(items);
-						}
+							var items = [];
 
-						objectStore.openCursor().onsuccess = function(event) {
-						  var cursor = event.target.result;
-						  if (cursor) {
-						    items.push(cursor.value);
-						    cursor.continue();
-						  }
-						};
+							tx.oncomplete = function () {
+								resolve(items);
+							}
+
+							store.openCursor().onsuccess = function(event) {
+							  var cursor = event.target.result;
+							  if (cursor) {
+							    items.push(cursor.value);
+							    cursor.continue();
+							  }
+							};
+						});
 					});
 				});
 			}

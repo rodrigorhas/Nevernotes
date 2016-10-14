@@ -496,7 +496,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'inde
 				}
 
 				post.audios.forEach(function (audio) {
-					saveAudioOnFileSystem(audio, audio.blob).then(function () {
+					$store.saveAudioFile(audio, audio.blob).then(function () {
 						console.log(audio);
 						audio.saved = true;
 					})
@@ -741,23 +741,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'inde
 	}
 
 	function saveAudioOnFileSystem (audio, blob) {
-		return new Promise (function (resolve, reject) {
-			/*fileSystem && fileSystem.writeBlob(audio.name, blob).then(resolve, function (e) {
-				$log('[ Error ] ' + e.text);
-			});*/
-			console.log("saveAudioOnFileSystem");
-			$store.load().then(function (store) {
-				var tx = store.transaction(['audio'], "readwrite");
-				var objectStore = tx.objectStore('audio');
-
-				var request = objectStore.add({name: audio.name, blob: blob});
-
-				request.onsuccess = resolve;
-				request.onerror = reject;
-				tx.onerror = reject;
-			});
-		})
-
+			$store.saveAudioFile(audio, blob);
 	}
 
 	$scope.clearFileSystem = function (ask) {
