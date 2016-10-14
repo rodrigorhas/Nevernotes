@@ -324,12 +324,12 @@ angular.module("App").directive("tagAutocomplete", function ($timeout, $compile)
 				else onItemClick = false;
 			});
 
-			/*$element.on('blur', function () {
+			$element.on('blur', function () {
 				$timeout(function () {
 					clearList();
 					resetWarn();
 				}, 200);
-			});*/
+			});
 		},
 
 		scope: {
