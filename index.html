@@ -120,7 +120,7 @@
 								</p>
 								<ul class="post-audios" ng-show="$post.audios.length">
 									<li ng-repeat="$audio in $post.audios">
-										<span>
+										<span ng-if="$audio.saved">
 											<p><b>{{$audio.name}}</b></p>
 											<audio ng-src="{{safeUrl($audio.url)}}" controls></audio>
 											<!-- <button class="btn btn-primary" ng-touchstart="downloadAudio($audio)">
@@ -239,6 +239,7 @@
 	<script src="app/vendors/auto-size/jquery.autosize.min.js"></script>
 	<script src="app/vendors/nicescroll/jquery.nicescroll.min.js"></script>
 
+	<script src="app/services/indexed-db.js"></script>
 	<script src="app/js/app.js"></script>
 	<script src="app/services/store.js"></script>
 
