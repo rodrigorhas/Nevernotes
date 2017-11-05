@@ -1,4 +1,4 @@
-angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'indexedDB'])
+angular.module("App", ['ngStorage', 'ngTouch', 'ngSanitize', 'indexedDB'])
 
 .filter("filterByTags", function () {
 	return function (items, output) {
@@ -138,7 +138,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'inde
 	}
 })
 
-.controller("Main", function ($scope, $timeout, $localStorage, fileSystem, $sce, $store) {
+.controller("Main", function ($scope, $timeout, $localStorage, $sce, $store) {
 
 	$store.load().then(function (db) {
 		$log("Store initialized");
@@ -295,7 +295,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'inde
 	}
 
 	window.scope = $scope;
-	window.fileSystem = fileSystem;
 
 	function randomHash () {
 		return Math.random().toString(36).substring(2);
@@ -498,6 +497,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'inde
 				post.audios.forEach(function (audio) {
 					$store.saveAudioFile(audio, audio.blob).then(function () {
 						console.log(audio);
+						delete audio.url;
 						audio.saved = true;
 					})
 				})
@@ -740,10 +740,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'inde
 		});
 	}
 
-	function saveAudioOnFileSystem (audio, blob) {
-			$store.saveAudioFile(audio, blob);
-	}
-
 	$scope.clearFileSystem = function (ask) {
 		return new Promise (function (resolve, reject) {
 			ask = (ask == false) ? false : true;
@@ -769,7 +765,7 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'inde
 		try {
 	        // webkit shim
 	        window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;
-	        navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+	        navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.mediaDevices.getUserMedia || navigator.msGetUserMedia);
 	        window.URL = window.URL || window.webkitURL || window.mozURL;
 
 	        $scope.Audio.context = new AudioContext();
@@ -783,19 +779,6 @@ angular.module("App", ['ngStorage', 'fileSystem', 'ngTouch', 'ngSanitize', 'inde
 	    	startUserMedia(stream);
 	    });
 	};
-
-	function getAudioFile (file) {
-		/*$log("Getting file " +  file.name + ' from FileSystem');
-
-		return fileSystem.getFile('/' + file.name).then(function (e) {
-			$log("File " + file.name + " was found");
-			return  URL.createObjectURL(e);
-		}, function (e) {
-			console.log(e);
-			$log('[ Error ] ' + e.obj.message);
-			$log('[ Error ] File '+ file.name +' was not found on FileSystem');
-		});*/
-	}
 
 	$scope.safeUrl = function (string) {
 		return $sce.trustAsResourceUrl(string);

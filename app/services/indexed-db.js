@@ -3,13 +3,9 @@ angular
 	.service('$store', function ($timeout) {
 		function configBrowser () {
 			try {
-				// Na linha abaixo, você deve incluir os prefixos do navegador que você vai testar.
 				window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-				// Não use "var indexedDB = ..." se você não está numa function.
-				// Posteriormente, você pode precisar de referências de algum objeto window.IDB*:
 				window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
 				window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-				// (Mozilla nunca usou prefixo nesses objetos, então não precisamos window.mozIDB*)
 			}
 
 			catch (e) {
@@ -58,9 +54,10 @@ angular
 				});
 			},
 
-			saveAudioFile: function () {
+			saveAudioFile: function (audio, blob) {
+				var self = this;
 				return new Promise (function (resolve, reject) {
-					$store.load().then(function (store) {
+					self.load().then(function (store) {
 						var tx = store.transaction(['audio'], "readwrite");
 						var objectStore = tx.objectStore('audio');
 
