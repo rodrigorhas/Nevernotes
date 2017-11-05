@@ -1,4 +1,4 @@
-angular.module("App")
+angular.module("Nevernotes")
 .directive("autoGrow",["$timeout", function ($timeout) {
 	return {
 		restrict: "A",

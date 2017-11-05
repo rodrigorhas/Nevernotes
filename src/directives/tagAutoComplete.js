@@ -1,4 +1,4 @@
-angular.module("App").directive("tagAutocomplete", function ($timeout, $compile) {
+angular.module("Nevernotes").directive("tagAutocomplete", function ($timeout, $compile) {
 	return {
 		restrict: 'A',
 

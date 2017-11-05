@@ -1,4 +1,4 @@
-angular.module("App")
+angular.module("Nevernotes")
 .directive("autofocus",["$timeout", function ($timeout) {
 	return {
 		restrict: "A",

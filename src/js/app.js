@@ -1,4 +1,4 @@
-angular.module("App", ['ngStorage', 'ngTouch', 'ngSanitize', 'indexedDB'])
+angular.module("Nevernotes", ['ngStorage', 'ngTouch', 'ngSanitize', 'indexedDB'])
 
 .filter("filterByTags", function () {
 	return function (items, output) {

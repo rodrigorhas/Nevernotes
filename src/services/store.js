@@ -1,4 +1,4 @@
-angular.module("App")
+angular.module("Nevernotes")
 .factory('store', ["$http", "$timeout", function($http, $timeout) {
 	var store = {};
 

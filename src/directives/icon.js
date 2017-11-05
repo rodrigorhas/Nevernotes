@@ -1,4 +1,4 @@
-angular.module("App").directive("icon", function () {
+angular.module("Nevernotes").directive("icon", function () {
 	return {
 		restrict: 'E',
 		replace: true,

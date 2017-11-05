@@ -1,4 +1,4 @@
-angular.module("App")
+angular.module("Nevernotes")
 .directive("btn", function () {
 	return {
 		restrict: 'C',
