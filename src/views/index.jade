@@ -1,0 +1,181 @@
+doctype html
+html(lang='en', ng-app='Nevernotes', ng-controller='Main', manifest='manifest.appcache')
+  head
+    meta(charset='UTF-8')
+    title Nevernotes
+    link(rel='stylesheet', href='fonts/zmdi/css/material-design-iconic-font.min.css')
+    link(rel='stylesheet', href='vendors/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='src/css/app.min.css')
+    link(rel='stylesheet', href='vendors/materializecss/index.css')
+    link(rel='stylesheet', href='src/css/style.css')
+
+    each cssFile in htmlWebpackPlugin.files.css
+      link(rel='stylesheet', href="#{cssFile}")
+      //- style !{compilation.assets[cssFile.substr(htmlWebpackPlugin.files.publicPath.length)].source()}
+
+    meta(name='viewport', content='width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0')
+  body.ng-cloak(ng-cloak='')
+    .container
+      .row
+        .col.s12.m12.l6
+          .col.l4.s12.fixed
+            .searchbar
+              a.btn.btn-default(href='#menu', ng-click='loadConfig();', data-toggle='modal')
+                icon(name='settings')
+              input#searchBar(autofocus='', tag-autocomplete='', tags='Tags', type='text', ng-model='search', placeholder='Pesquise por tags ou notas')
+              span {{getTags(search, true)}}
+            .easy-post
+              .content-wrapper
+                textarea(auto-grow='', ng-bind-html='post.getText()', ng-model='post.value', ng-keyup='post.processInput($event)', placeholder='Escreva...', rows='4')
+              .padding.audio-list(ng-if='audioMode == true')
+                div
+                  button.btn.btn-primary(ng-mousedown='Audio.record($event)', ng-touchstart='Audio.record($event)')
+                    icon(name='mic')
+                  | 								{{(Audio.recording) ? "Gravando - Pressione para parar." : "Pressione para gravar."}}
+                ul(ng-show='post.audios.length')
+                  li(ng-repeat='$audio in post.audios')
+                    p(ng-if='Config.debugMode == true')
+                      | {{safeUrl($audio.url)}}
+                    audio(ng-src='{{safeUrl($audio.url)}}', controls='')
+                    button.btn.btn-default(ng-touchstart='removeAudioFromPostList($index)', ng-click='removeAudioFromPostList($index)')
+                      icon(name='close')
+              .padding.photo-list(ng-if='photoMode == 2')
+                | Ainda não implementado
+                // <input type="file" id="take-picture" accept="image/*">
+              .tag-manager
+                .input-group.tag-input
+                  span.input-group-addon
+                    icon(name='tag')
+                  input(type='text', ng-model='post.tagInput', ng-keydown='post.onTagInputKeydown($event)', placeholder='Enter para adicionar a tag')
+                .content(ng-if='post.tags.length')
+                  ul
+                    li(ng-repeat='tag in post.tags')
+                      span.badge
+                        | {{tag.name}}
+                        icon(ng-touchstart='removeTag($index)', ng-click='removeTag($index)', name='close')
+              .toolbar
+                ul
+                  li
+                    button.btn.btn-link
+                      icon(name='attachment-alt')
+                  li
+                    button.btn.btn-link(ng-touchstart='audioMode = !audioMode', ng-click='audioMode = !audioMode')
+                      icon(name='mic')
+                  li
+                    button.btn.btn-link(ng-touchstart='photoMode = !photoMode', ng-click='photoMode = !photoMode')
+                      icon(name='camera')
+                  li
+                    button.btn.btn-link
+                      icon(name='videocam')
+                  li.pull-right
+                    button.btn.btn-primary(ng-disabled='!post.value.length', ng-touchstart='post.save()', ng-click='post.save()')
+                      | Salvar
+        .col.s12.l6
+          .col.s12.m12.l12
+            .log(ng-show='Config.debugMode == true')
+            .post-list
+              .post(ng-repeat='$post in Store | filterByTags: getTags(search)')
+                .content
+                  p.text(ng-bind-html='safeHtml($post.text)')
+                    | {{$post.text}}
+                  ul.post-audios(ng-show='$post.audios.length')
+                    li(ng-repeat='$audio in $post.audios')
+                      span(ng-if='$audio.saved')
+                        p
+                          b {{$audio.name}}
+                        audio(ng-src='{{safeUrl($audio.url)}}', controls='')
+                        //
+                          <button class="btn btn-primary" ng-touchstart="downloadAudio($audio)">
+                          <span class="zmdi zmdi-download"></span>
+                          </button>
+                  .note-menu
+                    button.btn.btn-link(ng-touchstart='NoteMenu.position($event, $post, $index)', ng-click='NoteMenu.position($event, $post, $index)')
+                      icon(name='chevron-down')
+                .tags(ng-if='$post.tags.length')
+                  ul
+                    li(ng-repeat='tag in $post.tags')
+                      span.label.label-default(ng-touchstart='addToSearchbar(tag.name)', ng-click='addToSearchbar(tag.name)')
+                        | {{tag.name}}
+    ul.note-menu-list
+      li
+        button(ng-touchstart='NoteMenu.hide();NoteMenu.options.Edit()', ng-click='NoteMenu.hide();NoteMenu.options.Edit()') Editar
+      li
+        button(ng-touchstart='NoteMenu.hide();NoteMenu.options.Delete()', ng-click='NoteMenu.hide();NoteMenu.options.Delete()') Deletar
+    #menu.modal.fade
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+            h4.modal-title Configurações Gerais
+          .modal-body
+            h5 Informações
+            p
+              | Espaço disponivel: ≃ 
+              strong {{humanFileSize(Config.quota.quota, true)}}
+              br
+              | 						Espaço em uso: ≃ 
+              strong {{humanFileSize(Config.quota.used, true)}}
+            h5 Preferências
+            p
+              .padding
+                input#enter-option(type='checkbox', ng-model='Config.enterOption')
+                label(for='enter-option')
+                  | Pressionar 
+                  b ENTER
+                  |  para criar anotação
+            h5 Cache
+            p
+              | Limpar mídia
+              br
+              strong
+                small
+                  | (resultara na perda de todos os audios, videos, fotos e arquivos adicionados a toda e qualquer anotação)
+              br
+              br
+              button.btn.btn-danger(ng-click='clearFileSystem()', ng-touchstart='clearFileSystem()') limpar
+            p
+              | Limpar anotações
+              br
+              strong
+                small (resultara na perda de todos anotações e qualquer midia relacionada)
+              br
+              br
+              button.btn.btn-danger(ng-click='resetStore()', ng-touchstart='resetStore()') limpar
+            h5 Debug
+            p
+              | Alternar modo DEBUG
+              br
+              strong
+                small
+                  | (resultara na disponibilização do Log de Ações e algumas outras opções para desenvolvedor)
+              br
+              br
+              button.btn.btn-default(ng-click='Config.debugMode = !Config.debugMode') {{(Config.debugMode) ? "Desativar" : "Ativar"}}
+          //
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+    script(type='text/javascript', src='vendors/jquery/dist/jquery.min.js')
+    script(type='text/javascript', src='bower_components/angular/angular.min.js')
+    script(type='text/javascript', src='vendors/angular/angular-sanitize.js')
+    script(type='text/javascript', src='bower_components/ngstorage/ngStorage.min.js')
+    script(type='text/javascript', src='bower_components/moment/min/moment.min.js')
+    script(type='text/javascript', src='bower_components/ngtouch/build/ngTouch.min.js')
+    script(type='text/javascript', src='vendors/recorderjs/index.js')
+    script(type='text/javascript', src='vendors/bootstrap/dist/js/bootstrap.min.js')
+    script(type='text/javascript', src='vendors/waves/waves.min.js')
+    script(type='text/javascript', src='vendors/cursores/index.js')
+    script(type='text/javascript', src='vendors/auto-size/jquery.autosize.min.js')
+    script(type='text/javascript', src='vendors/nicescroll/jquery.nicescroll.min.js')
+    script(type='text/javascript', src='src/services/indexed-db.js')
+    script(type='text/javascript', src='src/js/app.js')
+    script(type='text/javascript', src='src/services/store.js')
+    script(type='text/javascript', src='src/directives/btn-class.js')
+    script(type='text/javascript', src='src/directives/tagAutoComplete.js')
+    script(type='text/javascript', src='src/directives/icon.js')
+    script(type='text/javascript', src='src/directives/autogrow.js')
+
+    each jsFile in htmlWebpackPlugin.files.js
+      script(type="text/javascript", src="#{jsFile}")
+      //- script(type="text/javascript") !{compilation.assets[jsFile.substr(htmlWebpackPlugin.files.publicPath.length)].source()}

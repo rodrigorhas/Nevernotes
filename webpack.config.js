@@ -26,7 +26,8 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
-      title: 'Output Management'
+      title: 'Output Management',
+      template: path.resolve(__dirname, 'src/views/index.jade')
     }),
     new ManifestPlugin(),
     new ExtractTextPlugin({
@@ -41,6 +42,8 @@ module.exports = {
         test: /\.(sass|scss)$/,
         loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
       },
+
+      { test: /\.jade$/, loader: 'jade-loader' },
   
       {
         test: /\.js$/,
