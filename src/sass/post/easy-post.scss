@@ -5,15 +5,17 @@
 	margin-top: 16px;
 	border-radius: 2px;
 
-	textarea {
-		width: 100%;
+	.editor {
+		min-width: 100%;
+		max-height: 300px;
 		position: relative;
-		display: block;
+		display: inline-block;
 		border: 0;
 		padding: 16px;
 		resize: none;
 		background-color: #fff;
 		border-radius: 3px 3px 0 0;
+		@extend .scrollbar;
 	}
 
 	.padding.extension {

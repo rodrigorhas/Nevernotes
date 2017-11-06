@@ -1,5 +1,9 @@
 class MainController {
   constructor($scope, $timeout, $localStorage, $sce, $store) {
+
+    $scope.safeHtml = function (html) {
+      return $sce.trustAsHtml(html);
+    }
     
     $store.load().then(function (db) {
       $log("Store initialized");
@@ -314,12 +318,12 @@ class MainController {
         $scope.photoMode = false;
       },
       
-      getText: function () {
-        var self = this;
+      getText: function (trusted = false) {
+        const self = this;
         
-        if(self.value) {
-          return self.value
-          .replace(/\n/g, "</br>");
+        if (self.value) {
+          let text = self.value.replace(/\n/g, '</br>');
+          return trusted ? $scope.safeHtml(text) : text;
         }
       },
       
@@ -328,7 +332,7 @@ class MainController {
         var self = this,
         post;
         
-        if($scope.Store) {
+        if ($scope.Store) {
           
           post = {
             id: self.id || randomHash(),
@@ -342,6 +346,7 @@ class MainController {
           for (var i = 0; i < $scope.Store.length; i++) {
             var item = $scope.Store[i];
             if(item.id == self.id) {
+              console.log('update item', post, 'to', item)
               $scope.Store[i] = post;
               
               if(post.audios.length) {
@@ -382,10 +387,6 @@ class MainController {
           self.save();
         }
       }
-    }
-    
-    $scope.safeHtml = function (html) {
-      return $sce.trustAsHtml(html);
     }
     
     $scope.removeTag = function (index) {
