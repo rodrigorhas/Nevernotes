@@ -1,19 +1,18 @@
 doctype html
-html(lang='en', ng-app='Nevernotes', ng-controller='Main', manifest='manifest.appcache')
+html(lang='en', ng-app='Nevernotes', ng-controller='Main', manifest='manifest.json')
   head
     meta(charset='UTF-8')
     title Nevernotes
-    link(rel='stylesheet', href='fonts/zmdi/css/material-design-iconic-font.min.css')
-    link(rel='stylesheet', href='vendors/bootstrap/dist/css/bootstrap.min.css')
-    link(rel='stylesheet', href='src/css/app.min.css')
-    link(rel='stylesheet', href='vendors/materializecss/index.css')
-    link(rel='stylesheet', href='src/css/style.css')
+    link(rel='stylesheet', href='../fonts/zmdi/css/material-design-iconic-font.min.css')
+    link(rel='stylesheet', href='../vendors/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='../vendors/theme/theme.min.css')
+    link(rel='stylesheet', href='../vendors/materializecss/index.css')
+    //-link(rel='stylesheet', href='../src/css/style.css')
 
-    each cssFile in htmlWebpackPlugin.files.css
-      link(rel='stylesheet', href="#{cssFile}")
-      //- style !{compilation.assets[cssFile.substr(htmlWebpackPlugin.files.publicPath.length)].source()}
-
+    //- each cssFile in htmlWebpackPlugin.files.css
+    //-   link(rel='stylesheet', href="#{cssFile}")
     meta(name='viewport', content='width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0')
+
   body.ng-cloak(ng-cloak='')
     .container
       .row
@@ -41,7 +40,7 @@ html(lang='en', ng-app='Nevernotes', ng-controller='Main', manifest='manifest.ap
                       icon(name='close')
               .padding.photo-list(ng-if='photoMode == 2')
                 | Ainda não implementado
-                // <input type="file" id="take-picture" accept="image/*">
+                //- <input type="file" id="take-picture" accept="image/*">
               .tag-manager
                 .input-group.tag-input
                   span.input-group-addon
@@ -84,7 +83,7 @@ html(lang='en', ng-app='Nevernotes', ng-controller='Main', manifest='manifest.ap
                         p
                           b {{$audio.name}}
                         audio(ng-src='{{safeUrl($audio.url)}}', controls='')
-                        //
+                        //-
                           <button class="btn btn-primary" ng-touchstart="downloadAudio($audio)">
                           <span class="zmdi zmdi-download"></span>
                           </button>
@@ -151,31 +150,26 @@ html(lang='en', ng-app='Nevernotes', ng-controller='Main', manifest='manifest.ap
               br
               br
               button.btn.btn-default(ng-click='Config.debugMode = !Config.debugMode') {{(Config.debugMode) ? "Desativar" : "Ativar"}}
-          //
-            <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-    script(type='text/javascript', src='vendors/jquery/dist/jquery.min.js')
-    script(type='text/javascript', src='bower_components/angular/angular.min.js')
-    script(type='text/javascript', src='vendors/angular/angular-sanitize.js')
-    script(type='text/javascript', src='bower_components/ngstorage/ngStorage.min.js')
-    script(type='text/javascript', src='bower_components/moment/min/moment.min.js')
-    script(type='text/javascript', src='bower_components/ngtouch/build/ngTouch.min.js')
-    script(type='text/javascript', src='vendors/recorderjs/index.js')
-    script(type='text/javascript', src='vendors/bootstrap/dist/js/bootstrap.min.js')
-    script(type='text/javascript', src='vendors/waves/waves.min.js')
-    script(type='text/javascript', src='vendors/cursores/index.js')
-    script(type='text/javascript', src='vendors/auto-size/jquery.autosize.min.js')
-    script(type='text/javascript', src='vendors/nicescroll/jquery.nicescroll.min.js')
-    script(type='text/javascript', src='src/services/indexed-db.js')
-    script(type='text/javascript', src='src/js/app.js')
-    script(type='text/javascript', src='src/services/store.js')
-    script(type='text/javascript', src='src/directives/btn-class.js')
-    script(type='text/javascript', src='src/directives/tagAutoComplete.js')
-    script(type='text/javascript', src='src/directives/icon.js')
-    script(type='text/javascript', src='src/directives/autogrow.js')
 
-    each jsFile in htmlWebpackPlugin.files.js
-      script(type="text/javascript", src="#{jsFile}")
-      //- script(type="text/javascript") !{compilation.assets[jsFile.substr(htmlWebpackPlugin.files.publicPath.length)].source()}
+    script(type='text/javascript', src='../vendors/jquery/dist/jquery.min.js')
+    script(type='text/javascript', src='../bower_components/angular/angular.min.js')
+    script(type='text/javascript', src='../vendors/angular/angular-sanitize.js')
+    script(type='text/javascript', src='../bower_components/ngstorage/ngStorage.min.js')
+    script(type='text/javascript', src='../bower_components/moment/min/moment.min.js')
+    script(type='text/javascript', src='../bower_components/ngtouch/build/ngTouch.min.js')
+    script(type='text/javascript', src='../vendors/recorderjs/index.js')
+    script(type='text/javascript', src='../vendors/bootstrap/dist/js/bootstrap.min.js')
+    script(type='text/javascript', src='../vendors/waves/waves.min.js')
+    script(type='text/javascript', src='../vendors/cursores/index.js')
+    script(type='text/javascript', src='../vendors/auto-size/jquery.autosize.min.js')
+    script(type='text/javascript', src='../vendors/nicescroll/jquery.nicescroll.min.js')
+    script(type='text/javascript', src='../src/js/services/indexed-db.js')
+    script(type='text/javascript', src='../src/js/app.js')
+    script(type='text/javascript', src='../src/js/services/store.js')
+    script(type='text/javascript', src='../src/js/components/btn-class.js')
+    script(type='text/javascript', src='../src/js/components/tagAutoComplete.js')
+    script(type='text/javascript', src='../src/js/components/icon.js')
+    script(type='text/javascript', src='../src/js/components/autogrow.js')
+
+    //- each jsFile in htmlWebpackPlugin.files.js
+    //-   script(type="text/javascript", src="#{jsFile}")

@@ -40,7 +40,10 @@ module.exports = {
     rules: [
       {
         test: /\.(sass|scss)$/,
-        loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
+        loader: ExtractTextPlugin.extract([
+          {loader: 'css-loader', options: { minimize: true }},
+          'sass-loader'
+        ])
       },
 
       { test: /\.jade$/, loader: 'jade-loader' },
