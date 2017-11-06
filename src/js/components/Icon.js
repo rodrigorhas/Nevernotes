@@ -1,5 +1,5 @@
-angular.module("Nevernotes").directive("icon", function () {
-	return {
+function Icon () {
+	const component = {
 		restrict: 'E',
 		replace: true,
 
@@ -9,4 +9,8 @@ angular.module("Nevernotes").directive("icon", function () {
 			name: '@'
 		}
 	}
-});
+
+	return component;
+}
+
+export default Icon;

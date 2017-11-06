@@ -1,5 +1,4 @@
-angular.module("Nevernotes")
-.factory('store', ["$http", "$timeout", function($http, $timeout) {
+function Store ($http, $timeout) {
 	var store = {};
 
 	return {
@@ -114,4 +113,6 @@ angular.module("Nevernotes")
 			}
 		}
 	};
-}]);
+}
+
+export default Store;

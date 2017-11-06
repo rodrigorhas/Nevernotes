@@ -2,7 +2,7 @@ doctype html
 html(lang='en', ng-app='Nevernotes', ng-controller='Main', manifest='manifest.json')
   head
     meta(charset='UTF-8')
-    title Nevernotes
+    title #{htmlWebpackPlugin.title}
     link(rel='stylesheet', href='../fonts/zmdi/css/material-design-iconic-font.min.css')
     link(rel='stylesheet', href='../vendors/bootstrap/dist/css/bootstrap.min.css')
     link(rel='stylesheet', href='../vendors/theme/theme.min.css')
@@ -163,13 +163,8 @@ html(lang='en', ng-app='Nevernotes', ng-controller='Main', manifest='manifest.js
     script(type='text/javascript', src='../vendors/cursores/index.js')
     script(type='text/javascript', src='../vendors/auto-size/jquery.autosize.min.js')
     script(type='text/javascript', src='../vendors/nicescroll/jquery.nicescroll.min.js')
-    script(type='text/javascript', src='../src/js/services/indexed-db.js')
-    script(type='text/javascript', src='../src/js/app.js')
-    script(type='text/javascript', src='../src/js/services/store.js')
-    script(type='text/javascript', src='../src/js/components/btn-class.js')
-    script(type='text/javascript', src='../src/js/components/tagAutoComplete.js')
-    script(type='text/javascript', src='../src/js/components/icon.js')
-    script(type='text/javascript', src='../src/js/components/autogrow.js')
-
-    //- each jsFile in htmlWebpackPlugin.files.js
-    //-   script(type="text/javascript", src="#{jsFile}")
+    //- script(type='text/javascript', src='../src/js/app.js')
+    //- script(type='text/javascript', src='../src/js/components/btn-class.js')
+    //- script(type='text/javascript', src='../src/js/components/tagAutoComplete.js')
+    //- script(type='text/javascript', src='../src/js/components/icon.js')
+    //- script(type='text/javascript', src='../src/js/components/autogrow.js')

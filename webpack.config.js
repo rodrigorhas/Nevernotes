@@ -13,21 +13,23 @@ module.exports = {
     alias: {
       Utils: path.resolve(__dirname, 'src/js/utils/'),
       Services: path.resolve(__dirname, 'src/js/services/'),
+      Filters: path.resolve(__dirname, 'src/js/filters/'),
       Factories: path.resolve(__dirname, 'src/js/factories/'),
       Components: path.resolve(__dirname, 'src/js/components/'),
       Controllers: path.resolve(__dirname, 'src/js/controllers/'),
+      Config$: path.resolve(__dirname, 'src/js/config.js'),
     }
   },
 
   entry: {
-    app: ['./src/App.js', './src/sass/main.scss'],
+    app: ['./src/js/App.js', './src/sass/main.scss'],
   },
   
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
-      title: 'Output Management',
-      template: path.resolve(__dirname, 'src/views/index.jade')
+      title: 'Nevernotes',
+      template: path.resolve(__dirname, 'src/views/index.jade'),
     }),
     new ManifestPlugin(),
     new ExtractTextPlugin({
