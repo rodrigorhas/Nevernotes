@@ -2,8 +2,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
+
+  watch: true,
+  context: __dirname,
 
   resolve: {
     alias: {
@@ -16,7 +20,7 @@ module.exports = {
   },
 
   entry: {
-    app: './src/App.js',
+    app: ['./src/App.js', './src/sass/main.scss'],
   },
   
   plugins: [
@@ -25,23 +29,17 @@ module.exports = {
       title: 'Output Management'
     }),
     new ManifestPlugin(),
+    new ExtractTextPlugin({
+      filename: 'css/[name].bundle.css',
+      allChunks: true,
+    }),
   ],
 
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        use: [
-          {
-            loader: "style-loader" // creates style nodes from JS strings
-          },
-          {
-            loader: "css-loader" // translates CSS into CommonJS
-          },
-          {
-            loader: "sass-loader" // compiles Sass to CSS
-          }
-        ]
+        test: /\.(sass|scss)$/,
+        loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
       },
   
       {
@@ -65,7 +63,7 @@ module.exports = {
   devtool: 'source-map',
 
   output: {
-    filename: '[name].bundle.js',
+    filename: 'js/[name].bundle-[hash].js',
     path: path.resolve(__dirname, 'dist')
   }
 };

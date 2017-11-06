@@ -1,0 +1,21 @@
+.fixed {
+	position: fixed;
+
+	@media screen and (max-width: 767px) {
+		position: relative;
+	}
+}
+
+.padding {
+	padding: 12px 16px;
+}
+
+.zmdi-close {
+	cursor: pointer;
+}
+
+.log {
+	overflow-y: auto;
+	height: 315px;
+	margin-top: 38px;
+}
